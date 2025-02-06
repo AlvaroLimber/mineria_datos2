@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Minería de datos</title>
+  <meta name="description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Minería de datos" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  <meta name="github-repo" content="alvarolimber/MD_UCB" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Minería de datos" />
+  
+  <meta name="twitter:description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  
+
+<meta name="author" content="MSc. Alvaro Limber Chirino Gutierrez" />
+
+
+<meta name="date" content="2025-02-05" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="minería-de-texto.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#audiencia"><i class="fa fa-check"></i>Audiencia</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#estructura-del-libro"><i class="fa fa-check"></i>Estructura del libro</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#datos"><i class="fa fa-check"></i>Datos</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bibliografía"><i class="fa fa-check"></i>Bibliografía</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="minería-de-texto.html"><a href="minería-de-texto.html"><i class="fa fa-check"></i><b>1</b> Minería de texto</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#qué-es-la-minería-de-texto"><i class="fa fa-check"></i><b>1.1</b> ¿Qué es la minería de texto?</a></li>
+<li class="chapter" data-level="1.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#dónde-se-aplica-la-minería-de-texto"><i class="fa fa-check"></i><b>1.2</b> Dónde se aplica la minería de texto?</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#por-qué-es-importante"><i class="fa fa-check"></i><b>1.2.1</b> ¿Por qué es importante?</a></li>
+<li class="chapter" data-level="1.2.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#las-consecuencias-de-ignorarlo"><i class="fa fa-check"></i><b>1.2.2</b> Las consecuencias de ignorarlo</a></li>
+<li class="chapter" data-level="1.2.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#beneficios"><i class="fa fa-check"></i><b>1.2.3</b> Beneficios</a></li>
+<li class="chapter" data-level="1.2.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#flujo-de-trabajo-en-la-minería-de-texto"><i class="fa fa-check"></i><b>1.2.4</b> Flujo de trabajo en la minería de texto</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#conceptos-básicos-de-la-minería-de-texto"><i class="fa fa-check"></i><b>1.3</b> Conceptos básicos de la minería de texto</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#minería-de-texto-en-la-práctica"><i class="fa fa-check"></i><b>1.3.1</b> Minería de texto en la práctica</a></li>
+<li class="chapter" data-level="1.3.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#tipos-de-minería-de-texto"><i class="fa fa-check"></i><b>1.3.2</b> Tipos de Minería de Texto</a></li>
+<li class="chapter" data-level="1.3.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#bolsa-de-palabras"><i class="fa fa-check"></i><b>1.3.3</b> Bolsa de palabras</a></li>
+<li class="chapter" data-level="1.3.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#análisis-sintáctico"><i class="fa fa-check"></i><b>1.3.4</b> Análisis sintáctico</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#recolección"><i class="fa fa-check"></i><b>1.4</b> Recolección</a></li>
+<li class="chapter" data-level="1.5" data-path="minería-de-texto.html"><a href="minería-de-texto.html#tratamiento-de-texto"><i class="fa fa-check"></i><b>1.5</b> Tratamiento de texto</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#librerías-en-r-para-texto"><i class="fa fa-check"></i><b>1.5.1</b> Librerías en R para texto</a></li>
+<li class="chapter" data-level="1.5.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#caracteres-y-sustitución"><i class="fa fa-check"></i><b>1.5.2</b> Caracteres y sustitución</a></li>
+<li class="chapter" data-level="1.5.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#pegar-splits-y-extracciones"><i class="fa fa-check"></i><b>1.5.3</b> Pegar, splits y extracciones</a></li>
+<li class="chapter" data-level="1.5.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#búsqueda-de-palabras-clave"><i class="fa fa-check"></i><b>1.5.4</b> Búsqueda de palabras clave</a></li>
+<li class="chapter" data-level="1.5.5" data-path="minería-de-texto.html"><a href="minería-de-texto.html#stringr-and-stringi"><i class="fa fa-check"></i><b>1.5.5</b> Stringr and stringi</a></li>
+<li class="chapter" data-level="1.5.6" data-path="minería-de-texto.html"><a href="minería-de-texto.html#pasos-de-preprocesamiento-para-minería-de-texto-de-bolsa-de-palabras"><i class="fa fa-check"></i><b>1.5.6</b> Pasos de preprocesamiento para minería de texto de bolsa de palabras</a></li>
+<li class="chapter" data-level="1.5.7" data-path="minería-de-texto.html"><a href="minería-de-texto.html#spellcheck-ortografía"><i class="fa fa-check"></i><b>1.5.7</b> Spellcheck (ORTOGRAFÍA)</a></li>
+<li class="chapter" data-level="1.5.8" data-path="minería-de-texto.html"><a href="minería-de-texto.html#importación-corpus-tdm-dtm"><i class="fa fa-check"></i><b>1.5.8</b> Importación, corpus, TDM, DTM</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="minería-de-texto.html"><a href="minería-de-texto.html#frecuencias"><i class="fa fa-check"></i><b>1.6</b> Frecuencias</a></li>
+<li class="chapter" data-level="1.7" data-path="minería-de-texto.html"><a href="minería-de-texto.html#asociaciones"><i class="fa fa-check"></i><b>1.7</b> Asociaciones</a></li>
+<li class="chapter" data-level="1.8" data-path="minería-de-texto.html"><a href="minería-de-texto.html#nubes-de-palabras"><i class="fa fa-check"></i><b>1.8</b> Nubes de palabras</a></li>
+<li class="chapter" data-level="1.9" data-path="minería-de-texto.html"><a href="minería-de-texto.html#análisis-de-sentimiento"><i class="fa fa-check"></i><b>1.9</b> Análisis de sentimiento</a>
+<ul>
+<li class="chapter" data-level="1.9.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#librería-syuzhet"><i class="fa fa-check"></i><b>1.9.1</b> Librería syuzhet</a></li>
+</ul></li>
+<li class="chapter" data-level="1.10" data-path="minería-de-texto.html"><a href="minería-de-texto.html#redes"><i class="fa fa-check"></i><b>1.10</b> Redes</a></li>
+<li class="chapter" data-level="1.11" data-path="minería-de-texto.html"><a href="minería-de-texto.html#cluster"><i class="fa fa-check"></i><b>1.11</b> Cluster</a></li>
+<li class="chapter" data-level="1.12" data-path="minería-de-texto.html"><a href="minería-de-texto.html#ejercicios-de-práctica"><i class="fa fa-check"></i><b>1.12</b> Ejercicios de práctica</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Minería de datos</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Minería de datos</h1>
+<h2 class="subtitle"><em>Aplicaciones en R con bases de datos de Bolivia</em></h2>
+<p class="author"><em>MSc. Alvaro Limber Chirino Gutierrez</em></p>
+<p class="date"><em>2025-02-05</em></p>
+</div>
+<div id="prefacio" class="section level1 unnumbered hasAnchor">
+<h1>Prefacio<a href="index.html#prefacio" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />Este documento de <a href="https://twiiter/alvarochirinog">Alvaro Chirino</a> esta bajo la licencia de <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
+<div id="audiencia" class="section level2 unnumbered hasAnchor">
+<h2>Audiencia<a href="index.html#audiencia" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Este documento representa un primer acercamiento a los estudiantes de estadística al software R y al mundo de la minería de datos.</p>
+</div>
+<div id="estructura-del-libro" class="section level2 unnumbered hasAnchor">
+<h2>Estructura del libro<a href="index.html#estructura-del-libro" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>El libro incluye los siguientes capítulos:</p>
+<ul>
+<li>Minería de texto</li>
+<li>Métodos de asociación</li>
+<li>Regresión y predicción</li>
+<li>Métodos de clasificación</li>
+</ul>
+</div>
+<div id="datos" class="section level2 unnumbered hasAnchor">
+<h2>Datos<a href="index.html#datos" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Puede acceder a estos desde el repositorio del libro</p>
+<ul>
+<li>Minería de texto
+<ul>
+<li></li>
+<li></li>
+<li></li>
+</ul></li>
+<li>Métodos de asociación
+<ul>
+<li></li>
+</ul></li>
+<li>Regresión y predicción
+<ul>
+<li></li>
+</ul></li>
+<li>Métodos de clasificación
+<ul>
+<li>Encuesta a hogares 2022 (eh22.RData)</li>
+<li>Encuesta a hogares 2023 (eh23.RData)</li>
+</ul></li>
+</ul>
+</div>
+<div id="bibliografía" class="section level2 unnumbered hasAnchor">
+<h2>Bibliografía<a href="index.html#bibliografía" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="minería-de-texto.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

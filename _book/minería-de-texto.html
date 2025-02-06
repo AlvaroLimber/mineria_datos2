@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1 Minería de texto | Minería de datos</title>
+  <meta name="description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1 Minería de texto | Minería de datos" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  <meta name="github-repo" content="alvarolimber/MD_UCB" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1 Minería de texto | Minería de datos" />
+  
+  <meta name="twitter:description" content="Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana" />
+  
+
+<meta name="author" content="MSc. Alvaro Limber Chirino Gutierrez" />
+
+
+<meta name="date" content="2025-02-05" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Prefacio</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#audiencia"><i class="fa fa-check"></i>Audiencia</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#estructura-del-libro"><i class="fa fa-check"></i>Estructura del libro</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#datos"><i class="fa fa-check"></i>Datos</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bibliografía"><i class="fa fa-check"></i>Bibliografía</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="minería-de-texto.html"><a href="minería-de-texto.html"><i class="fa fa-check"></i><b>1</b> Minería de texto</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#qué-es-la-minería-de-texto"><i class="fa fa-check"></i><b>1.1</b> ¿Qué es la minería de texto?</a></li>
+<li class="chapter" data-level="1.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#dónde-se-aplica-la-minería-de-texto"><i class="fa fa-check"></i><b>1.2</b> Dónde se aplica la minería de texto?</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#por-qué-es-importante"><i class="fa fa-check"></i><b>1.2.1</b> ¿Por qué es importante?</a></li>
+<li class="chapter" data-level="1.2.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#las-consecuencias-de-ignorarlo"><i class="fa fa-check"></i><b>1.2.2</b> Las consecuencias de ignorarlo</a></li>
+<li class="chapter" data-level="1.2.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#beneficios"><i class="fa fa-check"></i><b>1.2.3</b> Beneficios</a></li>
+<li class="chapter" data-level="1.2.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#flujo-de-trabajo-en-la-minería-de-texto"><i class="fa fa-check"></i><b>1.2.4</b> Flujo de trabajo en la minería de texto</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#conceptos-básicos-de-la-minería-de-texto"><i class="fa fa-check"></i><b>1.3</b> Conceptos básicos de la minería de texto</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#minería-de-texto-en-la-práctica"><i class="fa fa-check"></i><b>1.3.1</b> Minería de texto en la práctica</a></li>
+<li class="chapter" data-level="1.3.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#tipos-de-minería-de-texto"><i class="fa fa-check"></i><b>1.3.2</b> Tipos de Minería de Texto</a></li>
+<li class="chapter" data-level="1.3.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#bolsa-de-palabras"><i class="fa fa-check"></i><b>1.3.3</b> Bolsa de palabras</a></li>
+<li class="chapter" data-level="1.3.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#análisis-sintáctico"><i class="fa fa-check"></i><b>1.3.4</b> Análisis sintáctico</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#recolección"><i class="fa fa-check"></i><b>1.4</b> Recolección</a></li>
+<li class="chapter" data-level="1.5" data-path="minería-de-texto.html"><a href="minería-de-texto.html#tratamiento-de-texto"><i class="fa fa-check"></i><b>1.5</b> Tratamiento de texto</a>
+<ul>
+<li class="chapter" data-level="1.5.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#librerías-en-r-para-texto"><i class="fa fa-check"></i><b>1.5.1</b> Librerías en R para texto</a></li>
+<li class="chapter" data-level="1.5.2" data-path="minería-de-texto.html"><a href="minería-de-texto.html#caracteres-y-sustitución"><i class="fa fa-check"></i><b>1.5.2</b> Caracteres y sustitución</a></li>
+<li class="chapter" data-level="1.5.3" data-path="minería-de-texto.html"><a href="minería-de-texto.html#pegar-splits-y-extracciones"><i class="fa fa-check"></i><b>1.5.3</b> Pegar, splits y extracciones</a></li>
+<li class="chapter" data-level="1.5.4" data-path="minería-de-texto.html"><a href="minería-de-texto.html#búsqueda-de-palabras-clave"><i class="fa fa-check"></i><b>1.5.4</b> Búsqueda de palabras clave</a></li>
+<li class="chapter" data-level="1.5.5" data-path="minería-de-texto.html"><a href="minería-de-texto.html#stringr-and-stringi"><i class="fa fa-check"></i><b>1.5.5</b> Stringr and stringi</a></li>
+<li class="chapter" data-level="1.5.6" data-path="minería-de-texto.html"><a href="minería-de-texto.html#pasos-de-preprocesamiento-para-minería-de-texto-de-bolsa-de-palabras"><i class="fa fa-check"></i><b>1.5.6</b> Pasos de preprocesamiento para minería de texto de bolsa de palabras</a></li>
+<li class="chapter" data-level="1.5.7" data-path="minería-de-texto.html"><a href="minería-de-texto.html#spellcheck-ortografía"><i class="fa fa-check"></i><b>1.5.7</b> Spellcheck (ORTOGRAFÍA)</a></li>
+<li class="chapter" data-level="1.5.8" data-path="minería-de-texto.html"><a href="minería-de-texto.html#importación-corpus-tdm-dtm"><i class="fa fa-check"></i><b>1.5.8</b> Importación, corpus, TDM, DTM</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="minería-de-texto.html"><a href="minería-de-texto.html#frecuencias"><i class="fa fa-check"></i><b>1.6</b> Frecuencias</a></li>
+<li class="chapter" data-level="1.7" data-path="minería-de-texto.html"><a href="minería-de-texto.html#asociaciones"><i class="fa fa-check"></i><b>1.7</b> Asociaciones</a></li>
+<li class="chapter" data-level="1.8" data-path="minería-de-texto.html"><a href="minería-de-texto.html#nubes-de-palabras"><i class="fa fa-check"></i><b>1.8</b> Nubes de palabras</a></li>
+<li class="chapter" data-level="1.9" data-path="minería-de-texto.html"><a href="minería-de-texto.html#análisis-de-sentimiento"><i class="fa fa-check"></i><b>1.9</b> Análisis de sentimiento</a>
+<ul>
+<li class="chapter" data-level="1.9.1" data-path="minería-de-texto.html"><a href="minería-de-texto.html#librería-syuzhet"><i class="fa fa-check"></i><b>1.9.1</b> Librería syuzhet</a></li>
+</ul></li>
+<li class="chapter" data-level="1.10" data-path="minería-de-texto.html"><a href="minería-de-texto.html#redes"><i class="fa fa-check"></i><b>1.10</b> Redes</a></li>
+<li class="chapter" data-level="1.11" data-path="minería-de-texto.html"><a href="minería-de-texto.html#cluster"><i class="fa fa-check"></i><b>1.11</b> Cluster</a></li>
+<li class="chapter" data-level="1.12" data-path="minería-de-texto.html"><a href="minería-de-texto.html#ejercicios-de-práctica"><i class="fa fa-check"></i><b>1.12</b> Ejercicios de práctica</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Minería de datos</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="minería-de-texto" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Minería de texto<a href="minería-de-texto.html#minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="qué-es-la-minería-de-texto" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> ¿Qué es la minería de texto?<a href="minería-de-texto.html#qué-es-la-minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Según <span class="citation">Kwartler (2017)</span> esta se define como:</p>
+<blockquote>
+<p><strong>La minería de texto es el proceso de destilación de información procesable del texto</strong></p>
+</blockquote>
+<p><em>Minería de texto</em> puede ser sinónimo de <em>análisis de texto</em>, sin embargo, el uso de minería de texto describe de forma más adecuada el descubrimiento de ideas (<strong>KDD</strong>) y el uso de algoritmos específicos más allá del análisis estadístico básico.</p>
+</div>
+<div id="dónde-se-aplica-la-minería-de-texto" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Dónde se aplica la minería de texto?<a href="minería-de-texto.html#dónde-se-aplica-la-minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<blockquote>
+<p>En cualquier parte donde se genere texto</p>
+</blockquote>
+<div id="por-qué-es-importante" class="section level3 hasAnchor" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> ¿Por qué es importante?<a href="minería-de-texto.html#por-qué-es-importante" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Las <strong>redes sociales</strong> continúan evolucionando y las empresas e instituciones participan en menor o mayor medida en estos espacios</li>
+<li><strong>Contenido en línea</strong> de una organización, sus competidores y fuentes externas, como los blogs, sigue creciendo.</li>
+<li>La <strong>digitalización</strong> de los antiguos registros en papel se está produciendo en muchas industrias, como la salud.</li>
+<li>Las <strong>nuevas tecnologías</strong>, como la transcripción automática de audio, ayudan a capturar información del cliente.</li>
+<li>A medida que las fuentes textuales crecen en cantidad, complejidad y número de fuentes, el avance simultáneo en el <strong>poder de procesamiento y almacenamiento</strong> se ha traducido en una gran cantidades de texto que se almacenan en todo el lago de datos de una empresa.</li>
+</ul>
+</div>
+<div id="las-consecuencias-de-ignorarlo" class="section level3 hasAnchor" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Las consecuencias de ignorarlo<a href="minería-de-texto.html#las-consecuencias-de-ignorarlo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Ignorar el texto no es una respuesta adecuada de un <em>esfuerzo analítico</em>. La exploración científica y analítica rigurosa requiere investigar fuentes de información que puedan explicar los fenómenos.</li>
+<li>No realizar minería de texto puede conducir a un <strong>análisis o resultado falso</strong> (sesgo de confirmación).</li>
+<li>Algunos problemas se basan <strong>casi exclusivamente en texto</strong>, por lo que no usar estos métodos significaría una reducción significativa en la efectividad o incluso no poder realizar el análisis.</li>
+</ul>
+</div>
+<div id="beneficios" class="section level3 hasAnchor" number="1.2.3">
+<h3><span class="header-section-number">1.2.3</span> Beneficios<a href="minería-de-texto.html#beneficios" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>La <strong>confianza</strong> se genera entre las partes interesadas ya que se necesita poco o ningún muestreo para extraer información.</li>
+<li>Las <strong>metodologías</strong> se pueden aplicar <strong>rápidamente</strong>.</li>
+<li>El uso de <strong>R</strong> permite métodos auditables y repetibles.</li>
+<li>La minería de texto identifica <strong>nuevas ideas</strong> o <strong>refuerza</strong> las percepciones existentes basadas en toda la información relevante.</li>
+</ul>
+<div class="float">
+<img src="_fig/tm1.PNG" alt="Posibles usos" />
+<div class="figcaption">Posibles usos</div>
+</div>
+</div>
+<div id="flujo-de-trabajo-en-la-minería-de-texto" class="section level3 hasAnchor" number="1.2.4">
+<h3><span class="header-section-number">1.2.4</span> Flujo de trabajo en la minería de texto<a href="minería-de-texto.html#flujo-de-trabajo-en-la-minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="float">
+<img src="_fig/tm2.PNG" alt="Flujo de trabajo" />
+<div class="figcaption">Flujo de trabajo</div>
+</div>
+<ol style="list-style-type: decimal">
+<li><strong>Definir el problema</strong> y establecer las metas</li>
+<li><strong>Identificar el texto</strong> que se quiere <strong>recolectar</strong></li>
+<li><strong>Organizar</strong> el texto (corpus, colección de documentos)</li>
+<li><strong>Extraer</strong> características (modelado inicial)</li>
+<li><strong>Analizar</strong> el texto (modelado completo)</li>
+<li>Llegar a una idea o una <strong>recomendación</strong></li>
+</ol>
+</div>
+</div>
+<div id="conceptos-básicos-de-la-minería-de-texto" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Conceptos básicos de la minería de texto<a href="minería-de-texto.html#conceptos-básicos-de-la-minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="minería-de-texto-en-la-práctica" class="section level3 hasAnchor" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> Minería de texto en la práctica<a href="minería-de-texto.html#minería-de-texto-en-la-práctica" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<blockquote>
+<p>La minería de textos representa la capacidad de tomar grandes <strong>cantidades de lenguaje</strong> no estructurado y <strong>extraer rápidamente información útil</strong> y novedosa que puede afectar la <strong>toma de decisiones</strong> de las partes interesadas.</p>
+</blockquote>
+</div>
+<div id="tipos-de-minería-de-texto" class="section level3 hasAnchor" number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> Tipos de Minería de Texto<a href="minería-de-texto.html#tipos-de-minería-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Bolsa de Palabras (<strong>bag words</strong>)</li>
+<li>Análisis sintáctico (<strong>syntactic parsing</strong>)</li>
+</ul>
+</div>
+<div id="bolsa-de-palabras" class="section level3 hasAnchor" number="1.3.3">
+<h3><span class="header-section-number">1.3.3</span> Bolsa de palabras<a href="minería-de-texto.html#bolsa-de-palabras" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Trata <strong>cada palabra</strong>, o grupos de palabras, llamados <strong>n‐gramas</strong>, como una <strong>característica única</strong> del documento. El <strong>orden de las palabras</strong> y el <em>tipo gramatical</em> de las palabras <em>no se capturan</em> en el análisis de una bolsa de palabras. Una ventaja de este enfoque es que, por lo general, <strong>no es computacionalmente costoso</strong> ni abrumadoramente técnico organizar los corpus para la minería de texto. Como resultado, el análisis de estilo de la bolsa de palabras a menudo se puede realizar rápidamente. Además, la bolsa de palabras <strong>encaja</strong> muy bien en los <strong>marcos de ML/MD</strong> porque proporciona una matriz organizada de observaciones y atributos (<em>Base de datos estructurada</em>)</p>
+<p>Esta se organiza como:</p>
+<ul>
+<li>DTM: Filas documentos, columnas palabras (tokenización)</li>
+<li>TDM: Filas palabras (tokenización), columnas documentos</li>
+</ul>
+<p>Nota: la colección de documentos de interés se llama corpus</p>
+<ul>
+<li>DTM: Document Term Matrix</li>
+<li>TDM: Term Document Matrix</li>
+</ul>
+<blockquote>
+<p>Actividad 1</p>
+</blockquote>
+<ul>
+<li>Buscar 3 noticias/tweets/facebook/tiktok y armar el DTM y TDM</li>
+</ul>
+</div>
+<div id="análisis-sintáctico" class="section level3 hasAnchor" number="1.3.4">
+<h3><span class="header-section-number">1.3.4</span> Análisis sintáctico<a href="minería-de-texto.html#análisis-sintáctico" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Se basa en la sintaxis de las palabras. En su raíz, la sintaxis representa un conjunto de reglas que definen los componentes de una oración que luego se combinan para formar la oración misma (similar a los bloques de construcción).</p>
+<p>Específicamente, el análisis sintáctico utiliza técnicas de etiquetado de parte del discurso (POS) para identificar las palabras mismas en un contexto gramatical o útil.</p>
+<p>R tiene un paquete que se basa en el proyecto OpenNLP (procesamiento de lenguaje natural) para realizar estas tareas. Estas diversas etiquetas son atributos capturados como metadatos de la oración original</p>
+</div>
+</div>
+<div id="recolección" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Recolección<a href="minería-de-texto.html#recolección" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>La recolección de texto puede provenir de:</p>
+<ul>
+<li><em>Base de datos en csv u otro similar</em>: Normalmente cada texto/documento se incorpora dentro de un vector</li>
+<li><em>Colección de documentos:</em> Carpeta con archivos del mismo formato</li>
+<li><em>Scraping Web:</em> Raspar información de páginas web</li>
+<li><em>API:</em> Puertas de entrada que dejan algunos servicios</li>
+</ul>
+</div>
+<div id="tratamiento-de-texto" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> Tratamiento de texto<a href="minería-de-texto.html#tratamiento-de-texto" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="librerías-en-r-para-texto" class="section level3 hasAnchor" number="1.5.1">
+<h3><span class="header-section-number">1.5.1</span> Librerías en R para texto<a href="minería-de-texto.html#librerías-en-r-para-texto" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>stringi: Funciones para el tratamiento de texto</li>
+<li>stringr: Funciones para el tratamiento de texto</li>
+<li>qdap: Orientada a la minería de texto</li>
+<li>tm: text mining</li>
+</ul>
+</div>
+<div id="caracteres-y-sustitución" class="section level3 hasAnchor" number="1.5.2">
+<h3><span class="header-section-number">1.5.2</span> Caracteres y sustitución<a href="minería-de-texto.html#caracteres-y-sustitución" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Cantidad de caracteres: nchar</li>
+<li>Identificar patrones de texto y reemplazar: sub</li>
+</ul>
+</div>
+<div id="pegar-splits-y-extracciones" class="section level3 hasAnchor" number="1.5.3">
+<h3><span class="header-section-number">1.5.3</span> Pegar, splits y extracciones<a href="minería-de-texto.html#pegar-splits-y-extracciones" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Unir texto: paste</li>
+<li>Dividir texto según algún criterio: strsplit</li>
+<li>Extraer un sub texto de un texto: substr</li>
+</ul>
+<blockquote>
+<p>Actividad 2</p>
+</blockquote>
+<p>Del vector de noticias en mayúscula, extraer los últimas 2 caracteres del documento.</p>
+<blockquote>
+<p>Actividad 3</p>
+</blockquote>
+<p>Usando la EH23, la variable folio/UPM es una variable de identificación y de tipo texto/carácter, tiene la letra A o D que hace referencia al área Amanzanada o Dispersa. Se pide, extraer la letra y hacer una tabla de frecuencias.</p>
+</div>
+<div id="búsqueda-de-palabras-clave" class="section level3 hasAnchor" number="1.5.4">
+<h3><span class="header-section-number">1.5.4</span> Búsqueda de palabras clave<a href="minería-de-texto.html#búsqueda-de-palabras-clave" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>grep</li>
+<li>grepl</li>
+</ul>
+</div>
+<div id="stringr-and-stringi" class="section level3 hasAnchor" number="1.5.5">
+<h3><span class="header-section-number">1.5.5</span> Stringr and stringi<a href="minería-de-texto.html#stringr-and-stringi" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>str_detect</li>
+<li>stri_count</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="minería-de-texto.html#cb1-1" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;AGUA&quot;</span>, bd<span class="sc">$</span>may)</span>
+<span id="cb1-2"><a href="minería-de-texto.html#cb1-2" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;BOLIVIA&quot;</span>, bd<span class="sc">$</span>may)</span>
+<span id="cb1-3"><a href="minería-de-texto.html#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="minería-de-texto.html#cb1-4" tabindex="-1"></a><span class="fu">grepl</span>(<span class="st">&quot;AGUA&quot;</span>, bd<span class="sc">$</span>may)</span>
+<span id="cb1-5"><a href="minería-de-texto.html#cb1-5" tabindex="-1"></a><span class="fu">grepl</span>(<span class="st">&quot;BOLIVIA&quot;</span>, bd<span class="sc">$</span>may)</span>
+<span id="cb1-6"><a href="minería-de-texto.html#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="minería-de-texto.html#cb1-7" tabindex="-1"></a><span class="fu">str_detect</span>(bd<span class="sc">$</span>may, <span class="st">&quot;AGUA&quot;</span>)</span>
+<span id="cb1-8"><a href="minería-de-texto.html#cb1-8" tabindex="-1"></a><span class="fu">stri_count_fixed</span>(bd<span class="sc">$</span>may, <span class="st">&quot;AGUA&quot;</span>)</span>
+<span id="cb1-9"><a href="minería-de-texto.html#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="minería-de-texto.html#cb1-10" tabindex="-1"></a><span class="fu">stri_count_fixed</span>(bd<span class="sc">$</span>may, <span class="st">&quot;A&quot;</span>)</span>
+<span id="cb1-11"><a href="minería-de-texto.html#cb1-11" tabindex="-1"></a><span class="fu">stri_count</span>(bd<span class="sc">$</span>may, <span class="at">fixed =</span>  <span class="st">&quot;A&quot;</span>)</span></code></pre></div>
+</div>
+<div id="pasos-de-preprocesamiento-para-minería-de-texto-de-bolsa-de-palabras" class="section level3 hasAnchor" number="1.5.6">
+<h3><span class="header-section-number">1.5.6</span> Pasos de preprocesamiento para minería de texto de bolsa de palabras<a href="minería-de-texto.html#pasos-de-preprocesamiento-para-minería-de-texto-de-bolsa-de-palabras" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Tener cuidado cuando el texto es reconocido como factor</li>
+<li>El enfoque de la bolsa de palabras consume <strong>RAM</strong> si el corpus es grande</li>
+<li>Tener cuidado con la configuración de los equipos en cuanto la codificación y reconocimiento de caracteres del <strong>español</strong></li>
+<li>Los pasos dependerán del corpus del estudio</li>
+</ul>
+<p>Una ruta sugerida:</p>
+<ul>
+<li>Configuración básica para los caracteres e idioma</li>
+<li>Cargar las librerías básicas</li>
+<li>Cargar el corpus de interés</li>
+<li>Limpieza de texto
+<ul>
+<li>Mayúsculas, minúsculas</li>
+<li>Puntuación</li>
+<li>Espacios</li>
+<li>Números</li>
+<li>Palabras específicas (stopwords)</li>
+<li>Prefijos y sufijos</li>
+</ul></li>
+<li>Armado del DTM O TDM</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="minería-de-texto.html#cb2-1" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list=</span><span class="fu">ls</span>())</span>
+<span id="cb2-2"><a href="minería-de-texto.html#cb2-2" tabindex="-1"></a><span class="co">#Configuración básica para los caracteres e idioma</span></span>
+<span id="cb2-3"><a href="minería-de-texto.html#cb2-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-4"><a href="minería-de-texto.html#cb2-4" tabindex="-1"></a><span class="co">#idioma</span></span>
+<span id="cb2-5"><a href="minería-de-texto.html#cb2-5" tabindex="-1"></a><span class="fu">Sys.setlocale</span>(<span class="at">category =</span> <span class="st">&quot;LC_ALL&quot;</span>, <span class="at">locale =</span> <span class="st">&quot;es_ES.UTF-8&quot;</span>)</span>
+<span id="cb2-6"><a href="minería-de-texto.html#cb2-6" tabindex="-1"></a><span class="co">#Cargar las librerías básicas</span></span>
+<span id="cb2-7"><a href="minería-de-texto.html#cb2-7" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb2-8"><a href="minería-de-texto.html#cb2-8" tabindex="-1"></a><span class="fu">library</span>(qdap)</span>
+<span id="cb2-9"><a href="minería-de-texto.html#cb2-9" tabindex="-1"></a><span class="fu">library</span>(stringi)</span>
+<span id="cb2-10"><a href="minería-de-texto.html#cb2-10" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb2-11"><a href="minería-de-texto.html#cb2-11" tabindex="-1"></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb2-12"><a href="minería-de-texto.html#cb2-12" tabindex="-1"></a><span class="do">###############################</span></span>
+<span id="cb2-13"><a href="minería-de-texto.html#cb2-13" tabindex="-1"></a><span class="co">#importar</span></span>
+<span id="cb2-14"><a href="minería-de-texto.html#cb2-14" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/eco.RData&quot;</span>)</span>
+<span id="cb2-15"><a href="minería-de-texto.html#cb2-15" tabindex="-1"></a><span class="co"># Limpieza de texto</span></span>
+<span id="cb2-16"><a href="minería-de-texto.html#cb2-16" tabindex="-1"></a><span class="do">## Mayúsculas, minúsculas</span></span>
+<span id="cb2-17"><a href="minería-de-texto.html#cb2-17" tabindex="-1"></a>eco1<span class="ot">&lt;-</span><span class="fu">str_to_upper</span>(eco)</span>
+<span id="cb2-18"><a href="minería-de-texto.html#cb2-18" tabindex="-1"></a><span class="do">## Puntuación</span></span>
+<span id="cb2-19"><a href="minería-de-texto.html#cb2-19" tabindex="-1"></a>eco1<span class="ot">&lt;-</span><span class="fu">removePunctuation</span>(eco1)</span>
+<span id="cb2-20"><a href="minería-de-texto.html#cb2-20" tabindex="-1"></a><span class="do">## Espacios</span></span>
+<span id="cb2-21"><a href="minería-de-texto.html#cb2-21" tabindex="-1"></a><span class="fu">stripWhitespace</span>(<span class="st">&quot;  hola      a   &quot;</span>)</span>
+<span id="cb2-22"><a href="minería-de-texto.html#cb2-22" tabindex="-1"></a>eco1<span class="ot">&lt;-</span><span class="fu">stripWhitespace</span>(eco1)</span>
+<span id="cb2-23"><a href="minería-de-texto.html#cb2-23" tabindex="-1"></a><span class="do">## Números</span></span>
+<span id="cb2-24"><a href="minería-de-texto.html#cb2-24" tabindex="-1"></a>eco1<span class="ot">&lt;-</span><span class="fu">removeNumbers</span>(eco1)</span>
+<span id="cb2-25"><a href="minería-de-texto.html#cb2-25" tabindex="-1"></a><span class="do">## Palabras específicas (stopwords)</span></span>
+<span id="cb2-26"><a href="minería-de-texto.html#cb2-26" tabindex="-1"></a><span class="fu">stopwords</span>(<span class="st">&quot;es&quot;</span>)</span>
+<span id="cb2-27"><a href="minería-de-texto.html#cb2-27" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="minería-de-texto.html#cb2-28" tabindex="-1"></a>eco1<span class="ot">&lt;-</span><span class="fu">removeWords</span>(eco1, <span class="fu">toupper</span>(<span class="fu">stopwords</span>(<span class="st">&quot;es&quot;</span>)))</span>
+<span id="cb2-29"><a href="minería-de-texto.html#cb2-29" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="minería-de-texto.html#cb2-30" tabindex="-1"></a>eco1</span>
+<span id="cb2-31"><a href="minería-de-texto.html#cb2-31" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="minería-de-texto.html#cb2-32" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">nchar</span>(eco))</span>
+<span id="cb2-33"><a href="minería-de-texto.html#cb2-33" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">nchar</span>(eco1))</span>
+<span id="cb2-34"><a href="minería-de-texto.html#cb2-34" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="minería-de-texto.html#cb2-35" tabindex="-1"></a><span class="do">## Prefijos y sufijos</span></span>
+<span id="cb2-36"><a href="minería-de-texto.html#cb2-36" tabindex="-1"></a><span class="fu">stemDocument</span>(<span class="st">&quot;hola a todos y todas&quot;</span>,<span class="st">&quot;spanish&quot;</span>)</span>
+<span id="cb2-37"><a href="minería-de-texto.html#cb2-37" tabindex="-1"></a><span class="fu">stemDocument</span>(eco,<span class="st">&quot;spanish&quot;</span>)</span></code></pre></div>
+</div>
+<div id="spellcheck-ortografía" class="section level3 hasAnchor" number="1.5.7">
+<h3><span class="header-section-number">1.5.7</span> Spellcheck (ORTOGRAFÍA)<a href="minería-de-texto.html#spellcheck-ortografía" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>Se recomienda realizar este tratamiento antes de cargar los documentos a R.</p></li>
+<li><p><a href="https://github.com/wooorm/dictionaries/tree/main/dictionaries" class="uri">https://github.com/wooorm/dictionaries/tree/main/dictionaries</a></p></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="minería-de-texto.html#cb3-1" tabindex="-1"></a><span class="fu">library</span>(qdap)</span>
+<span id="cb3-2"><a href="minería-de-texto.html#cb3-2" tabindex="-1"></a><span class="fu">library</span>(hunspell)</span>
+<span id="cb3-3"><a href="minería-de-texto.html#cb3-3" tabindex="-1"></a><span class="co"># Cargar el diccionario</span></span>
+<span id="cb3-4"><a href="minería-de-texto.html#cb3-4" tabindex="-1"></a>texto <span class="ot">&lt;-</span> <span class="st">&quot;Esto es un tezto con algunos errores de ortografia en las palabras.&quot;</span></span>
+<span id="cb3-5"><a href="minería-de-texto.html#cb3-5" tabindex="-1"></a><span class="fu">hunspell</span>(texto,<span class="at">dict =</span>  <span class="st">&quot;es_ES&quot;</span>)</span>
+<span id="cb3-6"><a href="minería-de-texto.html#cb3-6" tabindex="-1"></a><span class="fu">hunspell_suggest</span>(texto,<span class="at">dict =</span>  <span class="st">&quot;es_ES&quot;</span>)</span></code></pre></div>
+</div>
+<div id="importación-corpus-tdm-dtm" class="section level3 hasAnchor" number="1.5.8">
+<h3><span class="header-section-number">1.5.8</span> Importación, corpus, TDM, DTM<a href="minería-de-texto.html#importación-corpus-tdm-dtm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="minería-de-texto.html#cb4-1" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list=</span><span class="fu">ls</span>())</span>
+<span id="cb4-2"><a href="minería-de-texto.html#cb4-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-3"><a href="minería-de-texto.html#cb4-3" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb4-4"><a href="minería-de-texto.html#cb4-4" tabindex="-1"></a><span class="fu">library</span>(qdap)</span>
+<span id="cb4-5"><a href="minería-de-texto.html#cb4-5" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-6"><a href="minería-de-texto.html#cb4-6" tabindex="-1"></a><span class="co"># Importar y cargar el Corpus</span></span>
+<span id="cb4-7"><a href="minería-de-texto.html#cb4-7" tabindex="-1"></a><span class="co"># Corpus en Vector</span></span>
+<span id="cb4-8"><a href="minería-de-texto.html#cb4-8" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/eco.RData&quot;</span>)</span>
+<span id="cb4-9"><a href="minería-de-texto.html#cb4-9" tabindex="-1"></a>bd_eco<span class="ot">&lt;-</span><span class="fu">VCorpus</span>(<span class="fu">VectorSource</span>(eco))</span>
+<span id="cb4-10"><a href="minería-de-texto.html#cb4-10" tabindex="-1"></a>bd_eco[[<span class="dv">1</span>]]<span class="sc">$</span>content</span>
+<span id="cb4-11"><a href="minería-de-texto.html#cb4-11" tabindex="-1"></a>bd_eco[[<span class="dv">2</span>]]<span class="sc">$</span>content</span>
+<span id="cb4-12"><a href="minería-de-texto.html#cb4-12" tabindex="-1"></a><span class="co"># Corpus en carpeta</span></span>
+<span id="cb4-13"><a href="minería-de-texto.html#cb4-13" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span>
+<span id="cb4-14"><a href="minería-de-texto.html#cb4-14" tabindex="-1"></a><span class="fu">getReaders</span>()</span>
+<span id="cb4-15"><a href="minería-de-texto.html#cb4-15" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb4-16"><a href="minería-de-texto.html#cb4-16" tabindex="-1"></a>dir<span class="ot">&lt;-</span><span class="st">&quot;_data/lajed_pdf&quot;</span></span>
+<span id="cb4-17"><a href="minería-de-texto.html#cb4-17" tabindex="-1"></a>lajed38 <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">DirSource</span>(</span>
+<span id="cb4-18"><a href="minería-de-texto.html#cb4-18" tabindex="-1"></a>  dir, <span class="at">pattern =</span> <span class="st">&quot;.pdf&quot;</span>), <span class="at">readerControl =</span> <span class="fu">list</span>(<span class="at">reader =</span> readPDF))</span>
+<span id="cb4-19"><a href="minería-de-texto.html#cb4-19" tabindex="-1"></a>lajed38[[<span class="dv">1</span>]]<span class="sc">$</span>content</span>
+<span id="cb4-20"><a href="minería-de-texto.html#cb4-20" tabindex="-1"></a>lajed38[[<span class="dv">1</span>]]<span class="sc">$</span>meta</span>
+<span id="cb4-21"><a href="minería-de-texto.html#cb4-21" tabindex="-1"></a><span class="co"># Limpieza del corpus</span></span>
+<span id="cb4-22"><a href="minería-de-texto.html#cb4-22" tabindex="-1"></a><span class="do">##función para la limpieza</span></span>
+<span id="cb4-23"><a href="minería-de-texto.html#cb4-23" tabindex="-1"></a>limpieza<span class="ot">&lt;-</span><span class="cf">function</span>(cp,<span class="at">extra=</span><span class="fu">c</span>(<span class="st">&quot;&quot;</span>)){</span>
+<span id="cb4-24"><a href="minería-de-texto.html#cb4-24" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cp, <span class="fu">content_transformer</span>(tolower))</span>
+<span id="cb4-25"><a href="minería-de-texto.html#cb4-25" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cpl, removePunctuation) </span>
+<span id="cb4-26"><a href="minería-de-texto.html#cb4-26" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cpl, removeNumbers) </span>
+<span id="cb4-27"><a href="minería-de-texto.html#cb4-27" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cpl, removeWords, <span class="fu">stopwords</span>(<span class="st">&quot;es&quot;</span>))</span>
+<span id="cb4-28"><a href="minería-de-texto.html#cb4-28" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cpl, removeWords, extra)</span>
+<span id="cb4-29"><a href="minería-de-texto.html#cb4-29" tabindex="-1"></a>  cpl<span class="ot">&lt;-</span><span class="fu">tm_map</span>(cpl, stripWhitespace) </span>
+<span id="cb4-30"><a href="minería-de-texto.html#cb4-30" tabindex="-1"></a>  <span class="fu">return</span>(cpl)</span>
+<span id="cb4-31"><a href="minería-de-texto.html#cb4-31" tabindex="-1"></a>}</span>
+<span id="cb4-32"><a href="minería-de-texto.html#cb4-32" tabindex="-1"></a>lajed38l<span class="ot">&lt;-</span><span class="fu">limpieza</span>(lajed38)</span>
+<span id="cb4-33"><a href="minería-de-texto.html#cb4-33" tabindex="-1"></a>bd_ecol<span class="ot">&lt;-</span><span class="fu">limpieza</span>(bd_eco)</span>
+<span id="cb4-34"><a href="minería-de-texto.html#cb4-34" tabindex="-1"></a>lajed38l[[<span class="dv">1</span>]]<span class="sc">$</span>content</span>
+<span id="cb4-35"><a href="minería-de-texto.html#cb4-35" tabindex="-1"></a>bd_ecol[[<span class="dv">1</span>]]<span class="sc">$</span>content</span>
+<span id="cb4-36"><a href="minería-de-texto.html#cb4-36" tabindex="-1"></a><span class="do">###armar los TDM O DTM</span></span>
+<span id="cb4-37"><a href="minería-de-texto.html#cb4-37" tabindex="-1"></a>dtm_eco<span class="ot">&lt;-</span><span class="fu">DocumentTermMatrix</span>(bd_ecol)</span>
+<span id="cb4-38"><a href="minería-de-texto.html#cb4-38" tabindex="-1"></a>dtm_eco_m<span class="ot">&lt;-</span><span class="fu">as.matrix</span>(dtm_eco)</span>
+<span id="cb4-39"><a href="minería-de-texto.html#cb4-39" tabindex="-1"></a>tdm_eco<span class="ot">&lt;-</span><span class="fu">TermDocumentMatrix</span>(bd_ecol)</span>
+<span id="cb4-40"><a href="minería-de-texto.html#cb4-40" tabindex="-1"></a>tdm_eco_m<span class="ot">&lt;-</span><span class="fu">as.matrix</span>(tdm_eco)</span>
+<span id="cb4-41"><a href="minería-de-texto.html#cb4-41" tabindex="-1"></a><span class="fu">dim</span>(tdm_eco_m)</span>
+<span id="cb4-42"><a href="minería-de-texto.html#cb4-42" tabindex="-1"></a>dtm_lj<span class="ot">&lt;-</span><span class="fu">DocumentTermMatrix</span>(lajed38l)</span>
+<span id="cb4-43"><a href="minería-de-texto.html#cb4-43" tabindex="-1"></a>dtm_lj_m<span class="ot">&lt;-</span><span class="fu">as.matrix</span>(dtm_lj)</span>
+<span id="cb4-44"><a href="minería-de-texto.html#cb4-44" tabindex="-1"></a>tdm_lj<span class="ot">&lt;-</span><span class="fu">TermDocumentMatrix</span>(lajed38l)</span>
+<span id="cb4-45"><a href="minería-de-texto.html#cb4-45" tabindex="-1"></a>tdm_lj_m<span class="ot">&lt;-</span><span class="fu">as.matrix</span>(tdm_lj)</span>
+<span id="cb4-46"><a href="minería-de-texto.html#cb4-46" tabindex="-1"></a><span class="fu">dim</span>(tdm_lj_m)</span></code></pre></div>
+</div>
+</div>
+<div id="frecuencias" class="section level2 hasAnchor" number="1.6">
+<h2><span class="header-section-number">1.6</span> Frecuencias<a href="minería-de-texto.html#frecuencias" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="minería-de-texto.html#cb5-1" tabindex="-1"></a>tf<span class="ot">&lt;-</span><span class="fu">rowSums</span>(tdm_eco_m)</span>
+<span id="cb5-2"><a href="minería-de-texto.html#cb5-2" tabindex="-1"></a>bd1<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="at">tx=</span><span class="fu">names</span>(tf),<span class="at">freq=</span>tf)</span>
+<span id="cb5-3"><a href="minería-de-texto.html#cb5-3" tabindex="-1"></a>bd1<span class="ot">&lt;-</span>bd1<span class="sc">%&gt;%</span><span class="fu">arrange</span>(<span class="sc">-</span>freq)</span>
+<span id="cb5-4"><a href="minería-de-texto.html#cb5-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-5"><a href="minería-de-texto.html#cb5-5" tabindex="-1"></a><span class="fu">ggplot</span>(bd1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(freq<span class="sc">&gt;</span><span class="dv">15</span>),<span class="fu">aes</span>(tx,freq))<span class="sc">+</span><span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>)<span class="sc">+</span><span class="fu">coord_flip</span>()</span>
+<span id="cb5-6"><a href="minería-de-texto.html#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="minería-de-texto.html#cb5-7" tabindex="-1"></a><span class="fu">ggplot</span>(bd1[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,],<span class="fu">aes</span>(tx,freq))<span class="sc">+</span><span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>)<span class="sc">+</span><span class="fu">coord_flip</span>()</span></code></pre></div>
+</div>
+<div id="asociaciones" class="section level2 hasAnchor" number="1.7">
+<h2><span class="header-section-number">1.7</span> Asociaciones<a href="minería-de-texto.html#asociaciones" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="minería-de-texto.html#cb6-1" tabindex="-1"></a><span class="fu">findAssocs</span>(tdm_eco,<span class="st">&quot;pobreza&quot;</span>,<span class="fl">0.2</span>)</span>
+<span id="cb6-2"><a href="minería-de-texto.html#cb6-2" tabindex="-1"></a><span class="fu">findAssocs</span>(tdm_eco,<span class="fu">c</span>(<span class="st">&quot;pobreza&quot;</span>,<span class="st">&quot;social&quot;</span>),<span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.1</span>))</span></code></pre></div>
+</div>
+<div id="nubes-de-palabras" class="section level2 hasAnchor" number="1.8">
+<h2><span class="header-section-number">1.8</span> Nubes de palabras<a href="minería-de-texto.html#nubes-de-palabras" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="minería-de-texto.html#cb7-1" tabindex="-1"></a><span class="fu">library</span>(ggwordcloud)<span class="co"># ggplot</span></span>
+<span id="cb7-2"><a href="minería-de-texto.html#cb7-2" tabindex="-1"></a><span class="fu">library</span>(wordcloud)<span class="co"># básico</span></span>
+<span id="cb7-3"><a href="minería-de-texto.html#cb7-3" tabindex="-1"></a><span class="fu">library</span>(wordcloud2)<span class="co"># optimazado html</span></span>
+<span id="cb7-4"><a href="minería-de-texto.html#cb7-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-5"><a href="minería-de-texto.html#cb7-5" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-6"><a href="minería-de-texto.html#cb7-6" tabindex="-1"></a><span class="co">#creando la base de datos de palabras y frecuencias</span></span>
+<span id="cb7-7"><a href="minería-de-texto.html#cb7-7" tabindex="-1"></a>bd<span class="ot">&lt;-</span><span class="fu">data.frame</span>(</span>
+<span id="cb7-8"><a href="minería-de-texto.html#cb7-8" tabindex="-1"></a>  <span class="at">texto=</span><span class="fu">rownames</span>(tdm_eco_m),</span>
+<span id="cb7-9"><a href="minería-de-texto.html#cb7-9" tabindex="-1"></a>  <span class="at">freq=</span><span class="fu">rowSums</span>(tdm_eco_m)</span>
+<span id="cb7-10"><a href="minería-de-texto.html#cb7-10" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="minería-de-texto.html#cb7-11" tabindex="-1"></a><span class="co"># ggplot</span></span>
+<span id="cb7-12"><a href="minería-de-texto.html#cb7-12" tabindex="-1"></a><span class="co"># ggplot(data,aes())+geom()</span></span>
+<span id="cb7-13"><a href="minería-de-texto.html#cb7-13" tabindex="-1"></a><span class="fu">ggplot</span>(bd,<span class="fu">aes</span>(<span class="at">label=</span>texto,<span class="at">size=</span>freq))<span class="sc">+</span></span>
+<span id="cb7-14"><a href="minería-de-texto.html#cb7-14" tabindex="-1"></a>  <span class="fu">geom_text_wordcloud</span>()</span>
+<span id="cb7-15"><a href="minería-de-texto.html#cb7-15" tabindex="-1"></a><span class="co"># limitar a términos con frecuencias de 4 o más</span></span>
+<span id="cb7-16"><a href="minería-de-texto.html#cb7-16" tabindex="-1"></a><span class="fu">ggplot</span>(bd<span class="sc">%&gt;%</span><span class="fu">filter</span>(freq<span class="sc">&gt;=</span><span class="dv">4</span>),<span class="fu">aes</span>(<span class="at">label=</span>texto,<span class="at">size=</span>freq))<span class="sc">+</span></span>
+<span id="cb7-17"><a href="minería-de-texto.html#cb7-17" tabindex="-1"></a>  <span class="fu">geom_text_wordcloud</span>()</span>
+<span id="cb7-18"><a href="minería-de-texto.html#cb7-18" tabindex="-1"></a><span class="co">#wordcloud</span></span>
+<span id="cb7-19"><a href="minería-de-texto.html#cb7-19" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
+<span id="cb7-20"><a href="minería-de-texto.html#cb7-20" tabindex="-1"></a><span class="fu">wordcloud</span>(bd<span class="sc">$</span>texto,bd<span class="sc">$</span>freq,<span class="at">min.freq =</span> <span class="dv">4</span>)</span>
+<span id="cb7-21"><a href="minería-de-texto.html#cb7-21" tabindex="-1"></a><span class="fu">wordcloud2</span>(bd)</span>
+<span id="cb7-22"><a href="minería-de-texto.html#cb7-22" tabindex="-1"></a><span class="fu">wordcloud2</span>(bd,<span class="at">shape=</span><span class="st">&quot;pentagon&quot;</span>)</span></code></pre></div>
+</div>
+<div id="análisis-de-sentimiento" class="section level2 hasAnchor" number="1.9">
+<h2><span class="header-section-number">1.9</span> Análisis de sentimiento<a href="minería-de-texto.html#análisis-de-sentimiento" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>El análisis de sentimientos es el proceso de extraer la intención emocional del autor de un texto.</strong></p>
+<p>Se debe tener en cuenta:</p>
+<ul>
+<li>Aspectos culturales</li>
+<li>diferencias demográficas</li>
+<li>texto con sentimientos compuestos</li>
+</ul>
+<p>Hay varios <strong>marcos de referencias</strong> de emociones que se pueden considerar. Uno de los más usados es el creado en 1980 por <em>Robert Plutchik</em> (psicólogo), se establecen 8 emociones:</p>
+<ul>
+<li>(-) ira (anger)</li>
+<li>(-) miedo (fear)</li>
+<li>(-) tristeza (sadness)</li>
+<li>(-) asco (disgust)</li>
+<li>(+) sorpresa (surprise)</li>
+<li>(+) anticipación (anticipation)</li>
+<li>(+) confianza (trust)</li>
+<li>(+) alegría (joy)</li>
+</ul>
+<div class="float">
+<img src="_fig/tm3.PNG" alt="Espectro de emociones de Plutchik’s a partir de las primarias" />
+<div class="figcaption">Espectro de emociones de Plutchik’s a partir de las primarias</div>
+</div>
+<p>La manera de aplicar el análisis de sentimiento en el enfoque de bolsas de palabras es utilizar un léxico con los sentimientos.</p>
+<blockquote>
+<p>Un léxico es como un diccionario que asocia cada término con una palabra</p>
+</blockquote>
+<p>Una dificultad de estos léxicos son los modismos de cada región.</p>
+<p>Lo que se recomienda en esos casos es ampliar el léxico.</p>
+<div id="librería-syuzhet" class="section level3 hasAnchor" number="1.9.1">
+<h3><span class="header-section-number">1.9.1</span> Librería syuzhet<a href="minería-de-texto.html#librería-syuzhet" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="minería-de-texto.html#cb8-1" tabindex="-1"></a><span class="fu">library</span>(syuzhet)</span>
+<span id="cb8-2"><a href="minería-de-texto.html#cb8-2" tabindex="-1"></a>lexico<span class="ot">&lt;-</span><span class="fu">get_sentiment_dictionary</span>(<span class="st">&quot;nrc&quot;</span>,<span class="at">language =</span> <span class="st">&quot;spanish&quot;</span>)</span>
+<span id="cb8-3"><a href="minería-de-texto.html#cb8-3" tabindex="-1"></a><span class="co">#ejemplo</span></span>
+<span id="cb8-4"><a href="minería-de-texto.html#cb8-4" tabindex="-1"></a>bds<span class="ot">&lt;-</span><span class="fu">get_nrc_sentiment</span>(bd<span class="sc">$</span>texto,<span class="at">language =</span> <span class="st">&quot;spanish&quot;</span>)</span>
+<span id="cb8-5"><a href="minería-de-texto.html#cb8-5" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">apply</span>(bds,<span class="dv">2</span>,sum),<span class="at">horiz =</span>T, <span class="at">las=</span><span class="dv">1</span>)</span>
+<span id="cb8-6"><a href="minería-de-texto.html#cb8-6" tabindex="-1"></a><span class="co"># Los gráficos de mosaico son mejores para la visualización de sentimientos.</span></span>
+<span id="cb8-7"><a href="minería-de-texto.html#cb8-7" tabindex="-1"></a><span class="co">#ampliar el léxico</span></span>
+<span id="cb8-8"><a href="minería-de-texto.html#cb8-8" tabindex="-1"></a>ww<span class="ot">&lt;-</span><span class="fu">get_sentiment_dictionary</span>(<span class="st">&quot;nrc&quot;</span>,<span class="at">language =</span> <span class="st">&quot;spanish&quot;</span>)</span>
+<span id="cb8-9"><a href="minería-de-texto.html#cb8-9" tabindex="-1"></a>ww<span class="ot">&lt;-</span><span class="fu">rbind</span>(ww,<span class="fu">c</span>(<span class="st">&quot;spanish&quot;</span>,<span class="st">&quot;xxxx&quot;</span>,<span class="st">&quot;negative&quot;</span>,<span class="st">&quot;1&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="redes" class="section level2 hasAnchor" number="1.10">
+<h2><span class="header-section-number">1.10</span> Redes<a href="minería-de-texto.html#redes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><strong>Nodo:</strong> normalmente es una entidad, objeto o sujeto. Para nuestro caso los nodos son los términos o los documentos. Estos nodos tienen atributos, como el tamaño, la forma, el color, etc.</li>
+<li><strong>Conexiones:</strong> se refieren a la manera de vincular los nodos, se representan por líneas y tienen diferentes atributos; tipo, grosor, dirección. A-&gt;B; A&lt;-B; A&lt;-&gt;B; A-B. En nuestro caso se utiliza A-B.</li>
+</ul>
+<p>Para la minería de texto el insumo principal es matriz adjunta a partir de un TDM o DTM. Donde se cuenta con matrices simétricas que hacen referencia a los términos o documentos</p>
+<p><span class="math display">\[Adj_A=A*A^t\]</span></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="minería-de-texto.html#cb9-1" tabindex="-1"></a><span class="fu">library</span>(igraph)<span class="co">#redes</span></span>
+<span id="cb9-2"><a href="minería-de-texto.html#cb9-2" tabindex="-1"></a><span class="fu">library</span>(visNetwork)<span class="co">#visual de una red</span></span>
+<span id="cb9-3"><a href="minería-de-texto.html#cb9-3" tabindex="-1"></a>mxd<span class="ot">&lt;-</span><span class="fu">t</span>(tdm_eco_m)<span class="sc">%*%</span>tdm_eco_m</span>
+<span id="cb9-4"><a href="minería-de-texto.html#cb9-4" tabindex="-1"></a>mxt<span class="ot">&lt;-</span><span class="fu">t</span>(dtm_eco_m)<span class="sc">%*%</span>dtm_eco_m</span>
+<span id="cb9-5"><a href="minería-de-texto.html#cb9-5" tabindex="-1"></a>mxt<span class="ot">&lt;-</span>tdm_eco_m<span class="sc">%*%</span><span class="fu">t</span>(tdm_eco_m)</span>
+<span id="cb9-6"><a href="minería-de-texto.html#cb9-6" tabindex="-1"></a><span class="fu">dim</span>(mxd)</span>
+<span id="cb9-7"><a href="minería-de-texto.html#cb9-7" tabindex="-1"></a><span class="fu">dim</span>(mxt)</span>
+<span id="cb9-8"><a href="minería-de-texto.html#cb9-8" tabindex="-1"></a><span class="co">#recomendación: reducir la cantidad de términos con base a las frecuencias</span></span>
+<span id="cb9-9"><a href="minería-de-texto.html#cb9-9" tabindex="-1"></a>cc<span class="ot">&lt;-</span><span class="fu">rowSums</span>(tdm_eco_m)<span class="sc">&gt;</span><span class="dv">5</span></span>
+<span id="cb9-10"><a href="minería-de-texto.html#cb9-10" tabindex="-1"></a>tdm<span class="ot">&lt;-</span>tdm_eco_m[cc, ]</span>
+<span id="cb9-11"><a href="minería-de-texto.html#cb9-11" tabindex="-1"></a><span class="fu">dim</span>(tdm)</span>
+<span id="cb9-12"><a href="minería-de-texto.html#cb9-12" tabindex="-1"></a>mxt<span class="ot">&lt;-</span>tdm<span class="sc">%*%</span><span class="fu">t</span>(tdm)</span>
+<span id="cb9-13"><a href="minería-de-texto.html#cb9-13" tabindex="-1"></a><span class="co"># redes</span></span>
+<span id="cb9-14"><a href="minería-de-texto.html#cb9-14" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph.adjacency</span>(mxt, <span class="at">weighted =</span> T, <span class="at">mode =</span> <span class="st">&#39;undirected&#39;</span>)</span>
+<span id="cb9-15"><a href="minería-de-texto.html#cb9-15" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">simplify</span>(g)</span>
+<span id="cb9-16"><a href="minería-de-texto.html#cb9-16" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>label <span class="ot">&lt;-</span> <span class="fu">V</span>(g)<span class="sc">$</span>name</span>
+<span id="cb9-17"><a href="minería-de-texto.html#cb9-17" tabindex="-1"></a><span class="fu">V</span>(g)<span class="sc">$</span>degree <span class="ot">&lt;-</span> <span class="fu">degree</span>(g)</span>
+<span id="cb9-18"><a href="minería-de-texto.html#cb9-18" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(g)</span>
+<span id="cb9-19"><a href="minería-de-texto.html#cb9-19" tabindex="-1"></a>nodes <span class="ot">=</span> data<span class="sc">$</span>nodes; edges <span class="ot">=</span> data<span class="sc">$</span>edges</span>
+<span id="cb9-20"><a href="minería-de-texto.html#cb9-20" tabindex="-1"></a>grupos <span class="ot">&lt;-</span> <span class="fu">cluster_label_prop</span>(g)</span>
+<span id="cb9-21"><a href="minería-de-texto.html#cb9-21" tabindex="-1"></a>nodes<span class="sc">$</span>value<span class="ot">&lt;-</span><span class="fu">prop.table</span>(nodes<span class="sc">$</span>degree)<span class="sc">*</span><span class="dv">1000</span></span>
+<span id="cb9-22"><a href="minería-de-texto.html#cb9-22" tabindex="-1"></a>nodes<span class="sc">$</span>group<span class="ot">&lt;-</span>grupos<span class="sc">$</span>membership</span>
+<span id="cb9-23"><a href="minería-de-texto.html#cb9-23" tabindex="-1"></a><span class="fu">visNetwork</span>(nodes,edges) </span></code></pre></div>
+</div>
+<div id="cluster" class="section level2 hasAnchor" number="1.11">
+<h2><span class="header-section-number">1.11</span> Cluster<a href="minería-de-texto.html#cluster" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Sigue la misma lógica vista en los métodos de agrupamiento</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="minería-de-texto.html#cb10-1" tabindex="-1"></a>tdm<span class="ot">&lt;-</span><span class="fu">removeSparseTerms</span>(tdm_eco, <span class="at">sparse=</span><span class="fl">0.975</span>)<span class="co">#percentage of empty</span></span>
+<span id="cb10-2"><a href="minería-de-texto.html#cb10-2" tabindex="-1"></a>tdm</span>
+<span id="cb10-3"><a href="minería-de-texto.html#cb10-3" tabindex="-1"></a>hc<span class="ot">&lt;-</span><span class="fu">hclust</span>(<span class="fu">dist</span>(tdm),<span class="at">method =</span> <span class="st">&quot;average&quot;</span>)</span>
+<span id="cb10-4"><a href="minería-de-texto.html#cb10-4" tabindex="-1"></a><span class="fu">plot</span>(hc)</span>
+<span id="cb10-5"><a href="minería-de-texto.html#cb10-5" tabindex="-1"></a><span class="co">#documentos</span></span>
+<span id="cb10-6"><a href="minería-de-texto.html#cb10-6" tabindex="-1"></a>hc<span class="ot">&lt;-</span><span class="fu">hclust</span>(<span class="fu">dist</span>(dtm_eco),<span class="at">method =</span> <span class="st">&quot;average&quot;</span>)</span>
+<span id="cb10-7"><a href="minería-de-texto.html#cb10-7" tabindex="-1"></a><span class="fu">plot</span>(hc)</span></code></pre></div>
+</div>
+<div id="ejercicios-de-práctica" class="section level2 hasAnchor" number="1.12">
+<h2><span class="header-section-number">1.12</span> Ejercicios de práctica<a href="minería-de-texto.html#ejercicios-de-práctica" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>Usando los datos del archivo eco.RData calcule el porcentaje de documentos que tratan sobre “pobreza”</li>
+<li>Usando los archivos pdf de la LAJED realice una nube de palabras global, por documentos y una red sobre las palabras
+3 Usando la encuesta a hogares 2021, la pregunta s03a_05e respecto las razones por la que no se inscribió o matriculo realice la limpieza correspondiente, una nube de palabras.</li>
+<li>Usando la base de datos sobre economia_tw.Rda, para cada gestión 2021, 2022 y 2023 identifique el texto, realice la limpieza y presente:
++ Nube de palabras
++ Análisis de sentimiento
++ Cluster jerárquico por documentos
++ Red para términos y usuarios</li>
+<li>Recolecte un corpus de su interés y realice la limpieza y genere:
++ Nube de palabras
++ Análisis de sentimiento
++ Cluster jerárquico por documentos
++ Red para términos y usuarios</li>
+</ol>
+
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div class="csl-entry">
+Erl, Thomas, Wajid Khattak, and Paul Buhler. 2015. <span>“Big Data FundamentalsConcepts, Drivers &amp; Techniques.”</span>
+</div>
+<div class="csl-entry">
+Kwartler, Ted. 2017. <em>Text Mining in Practice with r</em>.
+</div>
+<div class="csl-entry">
+Ramasubramanian, Karthik, and Abhishek Singh. 2019. <em>Machine Learning Using r</em>. <em>Machine Learning Using R</em>. Apress. <a href="https://doi.org/10.1007/978-1-4842-4215-5">https://doi.org/10.1007/978-1-4842-4215-5</a>.
+</div>
+<div class="csl-entry">
+YU-WEI. 2015. <span>“Machine Learning with r Cookbook.”</span>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

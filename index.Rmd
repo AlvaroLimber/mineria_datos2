@@ -1,0 +1,54 @@
+--- 
+title: "Minería de datos"
+subtitle: "Aplicaciones en R con bases de datos de Bolivia"
+author: "MSc. Alvaro Limber Chirino Gutierrez"
+description: "Este texto esta destinado a estudiantes de la carrera de Economía e Inteligencia de Negocios de la Universidad Católica Boliviana"
+date: "`r Sys.Date()`"
+delete_merged_file: true
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+graphics: yes
+github-repo: alvarolimber/MD_UCB
+bibliography: ref_md.bib
+nocite: '@*'
+pandoc_args: ["-Fpandoc-crossref"]
+---
+# Prefacio {-}
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />Este documento de [Alvaro Chirino](https://twiiter/alvarochirinog) esta bajo la licencia de <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+## Audiencia  {-}
+
+Este documento representa un primer acercamiento a los estudiantes de estadística  al software R y al mundo de la minería de datos.
+
+## Estructura del libro  {-}
+
+El libro incluye los siguientes capítulos:
+
+- Minería de texto 
+- Métodos de asociación
+- Regresión y predicción
+- Métodos de clasificación
+
+## Datos {-}
+
+Puede acceder a estos desde el repositorio del libro
+
+- Minería de texto 
+  + 
+  + 
+  + 
+- Métodos de asociación
+  +
+- Regresión y predicción
+  + 
+- Métodos de clasificación
+  + Encuesta a hogares 2022 (eh22.RData)
+  + Encuesta a hogares 2023 (eh23.RData)
+  
+## Bibliografía {-}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = F)
+```
