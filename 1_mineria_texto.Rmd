@@ -173,7 +173,6 @@ options(stringsAsFactors = FALSE)
 Sys.setlocale(category = "LC_ALL", locale = "es_ES.UTF-8")
 #Cargar las librerías básicas
 library(tm)
-library(qdap)
 library(stringi)
 library(stringr)
 library(SnowballC)
@@ -212,12 +211,28 @@ stemDocument(eco,"spanish")
   - https://github.com/wooorm/dictionaries/tree/main/dictionaries
 
 ```{r}
-library(qdap)
 library(hunspell)
 # Cargar el diccionario
-texto <- "Esto es un tezto con algunos errores de ortografia en las palabras."
-hunspell(texto,dict =  "es_ES")
-hunspell_suggest(texto,dict =  "es_ES")
+texto <- "Esto es un tezto con alguos errores de ortografa en las palabras."
+aux<-hunspell(texto, dict =  "es_ES")
+hunspell_suggest(aux[[1]], dict =  "es_ES")
+```
+
+### Lematización y etiquetado
+
+```{r}
+library(udpipe)
+ud_model <- udpipe_download_model(language = "spanish")
+ud_model <- udpipe_load_model(ud_model$file_model)
+# Texto de ejemplo
+texto1 <- "El presidente Luis Arce anunció nuevas medidas económicas en Bolivia."
+texto2 <-"El coche es rápido. El automóvil tiene gran velocidad. El carro es veloz." 
+
+# Procesamiento del texto
+resultado1 <- udpipe_annotate(ud_model, x = texto1)
+resultado2 <- udpipe_annotate(ud_model, x = texto2)
+resultado1 <- as.data.frame(resultado)
+resultado2 <- as.data.frame(resultado)
 ```
    
 ### Importación, corpus, TDM, DTM
