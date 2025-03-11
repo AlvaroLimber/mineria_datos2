@@ -14,6 +14,7 @@ editor_options:
   + Los métodos de asociación también se utilizan en la minería de datos, la inteligencia empresarial y la investigación de mercado para identificar patrones y tendencias en **grandes conjuntos de datos**.
 
 $$\{Pan, tomate, cebolla\} \Rightarrow \{ \text{Carne para hamburguesa}\}$$
+
 ## Dataset
 
 > POS: point-of-sale. Puntos de venta
@@ -26,6 +27,7 @@ $$\{Pan, tomate, cebolla\} \Rightarrow \{ \text{Carne para hamburguesa}\}$$
 La base de datos para este tipo de métodos esta basado en una colección de transacciones, una transacción la vamos a denotar como:
 
 $$T_i=\{I_1,I_2,I_3, \ldots \}$$
+
 Normalmente estas bases de datos se las puede expresar como una base de datos de 0 y 1. Donde el número de filas es cantidad de transacciones y el número de columnas es el total de item/productos.
   
 Algunos ejemplos:
@@ -97,84 +99,6 @@ $$\{antigripal,paracetamol\}\Rightarrow\{complejoB\}$$
   5. *Evaluación y validación de las reglas:* Las reglas de asociación generadas deben evaluarse y validar para determinar su utilidad y relevancia en el contexto de la aplicación específica. Esto puede incluir la evaluación de la calidad de las reglas en términos de precisión y relevancia, así como la interpretación de las reglas para identificar patrones y relaciones significativos.
   6. **Interpretación y uso de las reglas:** Finalmente, las reglas de asociación pueden ser interpretadas y utilizadas para *tomar decisiones* de negocios informadas y para identificar oportunidades para mejorar la eficiencia y la eficacia de las operaciones empresariales.
 
-## Procesamiento de los datos
-
-```{r}
-rm(list = ls())
-library(arules)# algoritmos 
-library(arulesViz)# gráfica
-library(readxl)# excel 
-#LISTA
-list_f<-list(
-  T1=c("vitaminas", "antigripal", "paracetamol"),
-  T2=c("ibuprofeno", "complejoB", "aspirina"),
-  T3=c("complejoB", "vitaminas"),
-  T4=c("antigripal", "paracetamol", "aspirina"),
-  T5=c("jarabe para la tos", "vitaminas")
-)
-#paste0("T",1:5)
-#names(list_f)<-paste0("T",1:5)#nombre de las Transacciones
-bdf<-as(list_f, "transactions")
-class(bdf)
-bdf
-#MATRIZ
-aux<-read_excel("_data/ejemplo_asoc.xlsx",1,"B1:H6")
-auxm<-as.matrix(aux)
-row.names(auxm)<-paste0("T",1:5)
-bdf2<-as(auxm, "transactions")
-bdf2
-#DATA FRAME
-aux<-read_excel(
-  "_data/ejemplo_asoc.xlsx",2
-  )
-aux$TRANSACCION<-paste0("T",aux$TRANSACCION)
-aux
-bdf3<-as(split(aux$ITEM, aux$TRANSACCION),"transactions")
-bdf3
-
-data("Groceries")# base de ejemplo de una tienda
-dfg<-Groceries
-dfg
-
-data("Adult")
-dfa<-Adult
-dfa
-#############Exploración
-#############
-# LIST(df)# mostrar las transacciones
-LIST(bdf)[5]
-LIST(dfg)[1500]
-LIST(dfa)[90]
-#  size(df)
-size(bdf)
-size(dfg)
-size(dfa)
-# summary(df)
-summary(bdf)
-summary(dfg)
-summary(dfa)
-# inspect(df)
-inspect(bdf)
-inspect(dfg[1:4])
-inspect(dfa[1:4])
-###gráfica
-# image(df)
-image(bdf)
-image(dfg[101:200])
-image(dfg[1:1000],xlim=c(0,1000))
-image(dfa[1:100])
-image(dfg[sample(1:9835,100)])
-image(dfa[sample(1:48842,100)])
-# itemFrequencyPlot(df)
-
-itemFrequencyPlot(bdf)
-itemFrequencyPlot(dfg)
-itemFrequencyPlot(dfa)
-
-itemFrequencyPlot(dfg,topN=10)
-itemFrequencyPlot(dfa,topN=10)
-```
-
 ## Algoritmo Apriori
 
 El algoritmo Apriori se basa en la idea de que si un conjunto de elementos *aparece con suficiente frecuencia* en un conjunto de datos, entonces es probable que *estén relacionados entre sí*.
@@ -202,63 +126,6 @@ Pasos:
   - Compra 4:	AD	
   - Compra 5:	ACD	
 
-```{r}
-rm(list = ls())
-library(arules)# algoritmos 
-library(arulesViz)# gráfica
-#LISTA
-list_f<-list(
-  T1=c("vitaminas", "antigripal", "paracetamol"),
-  T2=c("ibuprofeno", "complejoB", "aspirina"),
-  T3=c("complejoB", "vitaminas"),
-  T4=c("antigripal", "paracetamol", "aspirina"),
-  T5=c("jarabe para la tos", "vitaminas")
-)
-bdf<-as(list_f, "transactions")
-data("Groceries")
-dfg<-Groceries
-data("Adult")
-dfa<-Adult
-#apriori
-
-regla0<-apriori(bdf,parameter = list(supp=0.3,conf=0.7))
-
-summary(regla0)
-inspect(regla0)
-
-regla1<-apriori(dfg,parameter = list(supp=0.001,conf=0.9))
-
-summary(regla1)
-inspect(sort(regla1,by="lift")[1:10])
-```
-
-A partir de algún item
-
-```{r}
-soda_r=apriori(dfg, parameter=list(supp=0.001,conf =
-0.1, minlen=2), appearance = list(default="rhs",lhs="soda"))
-
-summary(soda_r)
-inspect(sort(soda_r,by="lift"))
-
-#botella de agua
-agua_r=apriori(dfg, parameter=list(supp=0.001,conf =
-0.1, minlen=2), appearance = list(default="rhs",lhs="bottled water"))
-
-summary(agua_r)
-inspect(sort(agua_r,by="lift"))
-
-
-```
-
-Algunas gráficas
-
-```{r}
-plot(regla1)
-plot(regla1,interactive = T)
-plot(soda_r,method = "graph")
-```
-
 ## Algoritmo ECLAT
 
 En términos de resultados, este algoritmo logra exactamente el mismo conjunto de items que algoritmo apriori, este tiene dos principales diferencias:
@@ -280,14 +147,123 @@ Pasos:
 
 ![](/_fig/apriori_eclat.PNG)
 
+## Ejemplo en R
+
 ```{r}
+rm(list = ls())
+library(arules)# algoritmos 
+library(arulesViz)# gráfica
+library(readxl)# excel 
+##############
+#Pre procesamiento
+##############
+#LISTA
+list_f<-list(
+  T1=c("vitaminas", "antigripal", "paracetamol"),
+  T2=c("ibuprofeno", "complejoB", "aspirina"),
+  T3=c("complejoB", "vitaminas"),
+  T4=c("antigripal", "paracetamol", "aspirina"),
+  T5=c("jarabe para la tos", "vitaminas")
+)
+bdf<-as(list_f, "transactions")
+class(bdf)
+bdf
+#MATRIZ
+aux<-read_excel("_data/ejemplo_asoc.xlsx",1,"B1:H6")
+auxm<-as.matrix(aux)
+row.names(auxm)<-paste0("T",1:5)
+bdf2<-as(auxm, "transactions")
+bdf2
+#DATA FRAME
+aux<-read_excel(
+  "_data/ejemplo_asoc.xlsx",2
+  )
+aux$TRANSACCION<-paste0("T",aux$TRANSACCION)
+aux
+bdf3<-as(split(aux$ITEM, aux$TRANSACCION),"transactions")
+bdf3
+
+data("Groceries")# base de ejemplo de una tienda
+dfg<-Groceries
+dfg
+
+data("Adult")
+dfa<-Adult
+dfa
+#############
+#Exploración
+#############
+# LIST(df)# mostrar las transacciones
+LIST(bdf)[5]
+LIST(dfg)[1500]
+LIST(dfa)[90]
+#  size(df)
+size(bdf)
+size(dfg)
+size(dfa)
+# summary(df)
+summary(bdf)
+summary(dfg)
+summary(dfa)
+# inspect(df)
+inspect(bdf)
+inspect(dfg[1:4])
+inspect(dfa[1:4])
+###gráfica
+# image(df)
+image(bdf)
+image(dfg[101:200])
+image(dfa[1:100])
+image(dfg[sample(1:9835,100)])
+image(dfa[sample(1:48842,100)])
+# itemFrequencyPlot(df)
+itemFrequencyPlot(bdf)
+itemFrequencyPlot(dfg)
+itemFrequencyPlot(dfa)
+itemFrequencyPlot(dfg,topN=10)
+itemFrequencyPlot(dfa,topN=10)
+##########
+#Algoritmo apriori
+##########
+regla0<-apriori(bdf,parameter = list(supp=0.3,conf=0.7))
+summary(regla0)
+inspect(regla0)
+
+regla1<-apriori(dfg,parameter = list(supp=0.001,conf=0.9))
+summary(regla1)
+inspect(sort(regla1,by="lift")[1:10])
+
+soda_r=apriori(dfg, parameter=list(supp=0.001,conf =
+0.1, minlen=2), appearance = list(default="rhs",lhs="soda"))
+
+summary(soda_r)
+inspect(sort(soda_r,by="lift"))
+
+#botella de agua
+agua_r=apriori(dfg, parameter=list(supp=0.001,conf =
+0.1, minlen=2), appearance = list(default="rhs",lhs="bottled water"))
+
+summary(agua_r)
+inspect(sort(agua_r,by="lift"))
+#figuras
+plot(regla1)
+plot(regla1,interactive = T)
+plot(soda_r,method = "graph")
+ruleExplorer(regla0)
+##########
 #eclat
+###########
 me1<-eclat(dfg, parameter = list(supp=0.01, minlen=1))
 # reporte
 summary(me1)
 inspect(sort(me1,by="support"
              )[1:2])
 plot(me1)
+
+me1r<-ruleInduction(me1, dfg, confidence=0.5)
+plot(me1r)
+#guardando las reglas
+write(me1, file="_data/eclat.csv")
 ```
 
 ## Práctica
