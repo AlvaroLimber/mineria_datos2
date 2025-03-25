@@ -1,0 +1,360 @@
+# Regresión
+
+$$y=f(x_1,x_2, \ldots)$$
+
+  * $y$ Variable de resultado, dependiente, solo tenemos a una $y$. 
+  * $x_1, x_2, \ldots$, variables de control, independientes.
+  
+ A partir de estas variables:
+ 
+  * ¿Cuál es la relación de $x$ sobre $y$?
+    + Lineal  
+
+$$y_i=\beta_0+\beta_1 x_{i1}+\beta_2 x_{i2}+\ldots+\epsilon_i$$
+$$E[y_i]=E[\hat{\beta}_0+\hat{\beta}_1 x_{i1}+\hat{\beta}_2 x_{i2}+\ldots]$$
+
+$$\frac{dy}{d x_1}= \beta_1$$
+
+> Nota: Diferenciar que la regresión busca establecer relaciones basadas en los datos y no asi un proceso causal.
+
+  + Polinomial
+  + Etc; No lineal,
+    
+  * Conocer la naturaleza de $y$ y las variables $x$
+    + $Y$ es cuanti (real), $X$ mixtas. (Modelos lineales, MCO)
+    + $Y$ es cuanti (discreta >= 0), $X$ cuanti. (Poisson)
+    + $Y$ es cuali nominal binario, $X$ mixtas. (LOGIT/PROBIT)
+    + $Y$ es cuali ordinal, $X$ mixtas. (Logit/probit ordenados)
+
+## Regresión lineal
+
+1. Base datos lista para el modelo (Unidad de investigación)
+2. Establecer la relación interés
+3. Definir el modelo de interés
+4. Optimizar el modelo
+5. Validar el modelo
+6. Predecir a partir del modelo
+
+
+### Paso 1: Base de datos
+
+  - Encuesta a hogares 2021
+
+```{r}
+rm(list=ls())
+library(dplyr)
+library(haven)
+load("_data/eh21_vf.RData")
+```
+
+### Paso 2: Establecer la relación de interés.
+
+  * y: Ingreso laboral de la persona
+  * x: Educación, área, sexo
+    + Priorizar alguna X
+    + Explorativa 
+    + Predictiva
+  * C: Edad, experiencia, departamento, #hij@s, pública/privada
+
+Algunos comentarios sobre la calidad de este modelo:
+
+  + Variables omitidas
+  + Se debe especificar la población objetivo de la manera más clara posible.
+  + Se debe identificar la naturaleza de las covariables (X) 
+  + Se debe definir el alcance del modelo; muestral o inferencial 
+
+PO: Personas que trabajan, con 21 años o más de edad
+
+```{r}
+library(labelled)
+eh21pe %>% select(ylab,aestudio,area,s01a_02,s01a_03)
+
+bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
+bd %>% to_factor() %>% select(ylab,aestudio,area,s01a_02,s01a_03)
+```
+
+### Paso 3: Definir el modelo a utilizar
+
+```{r}
+###################
+rm(list=ls())
+library(dplyr)
+library(haven)
+library(labelled)
+library(ggplot2)
+load("_data/eh21_vf.RData")
+bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
+###################
+#ylab
+ggplot(bd,aes(ylab))+geom_histogram()
+ggplot(bd,aes(ylab))+geom_boxplot()
+
+ggplot(bd,aes(log(ylab)))+geom_histogram()
+ggplot(bd,aes(log(ylab)))+geom_boxplot()
+# X
+ggplot(bd,aes(aestudio))+geom_bar()
+ggplot(bd,aes(s01a_03))+geom_bar()
+ggplot(bd,aes(area))+geom_bar()
+ggplot(bd,aes(to_factor(s01a_02)))+geom_bar()
+#modelo
+
+m1<-lm(ylab~aestudio,data = bd)#Modelo lineal; OLS MCO
+summary(m1)
+plot(m1)
+
+m2<-lm(log(ylab)~aestudio,data = bd)
+summary(m2)
+plot(m2)
+
+m3<-lm(log(ylab)~ factor(aestudio),data = bd)
+summary(m3)
+plot(m3)
+
+m4<-lm(log(ylab)~ factor(aestudio)+
+         factor(area)+
+         s01a_03+
+         factor(s01a_02)
+         ,data = bd)
+summary(m4)
+plot(m4)
+bd[9791,c("ylab","aestudio")]
+bd[6557,c("ylab","aestudio")]
+bd[2935,c("ylab","aestudio")]
+```
+
+### Paso 4: Optimizar el modelo
+
+```{r}
+# factores
+bd<-bd %>% mutate(rural=(area==2),
+              mujer=(s01a_02==2),
+              lp=(depto==2))
+
+m5<-lm(log(ylab)~ factor(aestudio)+
+         rural+s01a_03+mujer+lp
+         ,data = bd)
+summary(m5)
+# valores atípicos
+quantile(bd$ylab,c(0.01,0.99))
+
+bd1<-bd %>% filter(ylab>76 & ylab<12980)
+
+m6<-lm(log(ylab)~ factor(aestudio)+
+         rural+s01a_03+mujer+lp
+         ,data = bd1)
+summary(m6)
+plot(m6)
+bd1[7272,c("ylab","aestudio","mujer","rural","s01a_03","lp")]
+##########
+# stepwise
+rm(list=ls())
+library(dplyr)
+library(haven)
+library(labelled)
+library(ggplot2)
+load("_data/eh21_vf.RData")
+bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
+#paso 1: identificar las variables X
+bdaux<-bd %>% select(ylab, aestudio, s01a_03, s01a_02,area, depto, totper, tipohogar, cobersalud, tothrs)
+#paso 2: tipología de las variables
+bdaux<-bdaux %>% mutate(aestudio=factor(aestudio),
+                 area=factor(area),
+                 s01a_02=factor(s01a_02),
+                 depto=factor(depto),
+                 tipohogar=factor(tipohogar),
+                 cobersalud=factor(cobersalud))
+bdaux<-bdaux %>% filter(ylab>76 & ylab<12980)
+#paso 3: Algoritmo
+m1<-lm(log(ylab)~.,data=bdaux)
+summary(m1)
+m2<-step(m1)
+summary(m2)
+```
+
+### Paso 5: Validar el modelo
+
+```{r}
+#normalidad
+ee<-residuals(m2)
+hist(ee)
+
+#library(normtest)
+library(nortest)
+ad.test(ee)
+lillie.test(ee)
+
+plot(density(scale(ee)))
+curve(dnorm,add=T,col="red")
+plot(m2)
+
+aux<-scale(ee)>(-4)
+
+#paso 3: Algoritmo
+m1<-lm(log(ylab)~.,data=bdaux %>% filter(aux))
+summary(m1)
+m2<-step(m1)
+summary(m2)
+
+ee<-residuals(m2)
+ad.test(ee)
+lillie.test(ee)
+
+plot(density(scale(ee)))
+curve(dnorm,add=T,col="red")
+plot(m2)
+
+# Distancia de Cook
+cc<-cooks.distance(m2)
+table(cc<0.01)
+plot(density(cooks.distance(m2)))
+# colinealidad
+m3<-lm(ylab~aestudio+s01a_03,data=bdaux)
+summary(m3)
+## interacciones entre variables
+m4<-lm(ylab~aestudio+s01a_03+aestudio:s01a_03 ,data=bdaux)
+summary(m4)
+```
+
+```{r}
+rm(list=ls())
+library(dplyr)
+library(haven)
+library(labelled)
+library(ggplot2)
+load("_data/eh21_vf.RData")
+bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
+#paso 1: identificar las variables X
+bdaux<-bd %>% select(ylab, aestudio, s01a_03, s01a_02,area, depto, totper, tipohogar, cobersalud, tothrs) %>% mutate(aestudio=factor(aestudio),
+           area=factor(area),
+        s01a_02=factor(s01a_02),
+          depto=factor(depto),
+              tipohogar=factor(tipohogar),
+         cobersalud=factor(cobersalud))
+
+m1<-lm(log(ylab)~., data= bdaux)
+summary(m1)
+
+#Colinealidad
+##Variance Inflation Factors
+library(car)
+vif(m1)
+sqrt(vif(m1))>2
+
+# Verificar si la varianza es constante (homocedástico) o no (heterocedástico)
+library(lmtest)
+bptest(m1) # H0:  Homocedasticidad
+
+#corrigiendo 
+library(rms)
+
+model_1 = lm(log(ylab)~s01a_02+s01a_03,data=bdaux)
+
+model_2 = ols(log(ylab)~s01a_02+s01a_03,data=bdaux,x=T,y=T)
+
+bptest(model_1)
+bptest(model_2)
+
+robcov(model_2)
+```
+
+## Polinomios
+
+```{r}
+m2<-lm(log(ylab)~aestudio+poly(s01a_03,5),data=bdaux)
+summary(m2)
+
+m3<-lm(log(ylab)~aestudio+s01a_03+I(s01a_03^2)+I(s01a_03^4),data=bdaux)
+summary(m3)
+
+sqrt(vif(m2))>2
+vif(m2)
+bptest(m2)
+```
+
+## Predicciones
+
+```{r}
+m4<-lm(log(ylab)~s01a_03+aestudio,data=bdaux)
+summary(m4)
+
+exp(predict(m4))
+#base de datos nuevo
+bdp<-data.frame(s01a_03=c(23),
+                aestudio=factor(c(17)))
+
+exp(predict(m4,bdp))
+```
+
+
+## Probit y Logit
+
+Estrategia, llevar valores binarios a valores continuos. Mediante una función de enlace ($F(Y)$).
+
+$$F(Y)=Y'=X \beta +\epsilon$$
+
+Probit:
+
+$$Y=\Phi (X \beta +\epsilon)$$
+$$\phi^{-1}(Y)=X \beta +\epsilon$$
+
+$$Y'=X \beta +\epsilon$$
+
+El enlace $F(Y)=\Phi^{-1}(Y)$, es conocida como probit.
+
+
+Logit:
+
+$$logit(Y)=log\left(\frac{Y}{1-Y}\right)=X\beta+\epsilon$$
+
+$$Y=\frac{e^{X\beta+\epsilon}}{1+e^{X\beta+\epsilon}}$$
+Aplicación en R
+
+$$Pobreza=f(sexo, edad, area,dep,...)$$
+
+```{r}
+rm(list=ls())
+library(haven)
+library(dplyr)
+library(margins)# efectos marginales
+library(labelled)
+library(pscl)# Aproximación al ajuste del modelo
+#data
+load("_data/eh21_vf.RData")
+
+bd<-eh21pe %>% mutate(pobreza=(p0==1)) %>% 
+  filter(s01a_03>=20 & s01a_03<=30)
+
+bd<-bd %>% mutate(aestudio=to_factor(aestudio),
+              rural=(area==2),
+              depto=to_factor(depto),
+              mujer=(s01a_02==2)
+              )
+
+table(bd$pobreza)
+
+m1<-glm(pobreza~aestudio+s01a_03+depto+mujer+rural, 
+        data=bd, family=binomial(link="logit"))
+m2<-glm(pobreza~aestudio+s01a_03+depto+mujer+rural, 
+        data=bd, family=binomial(link="probit"))
+
+mm1<-margins(m1)
+smm1<-summary(mm1)
+
+mm2<-margins(m2)
+smm2<-summary(mm2)
+
+plot(1:30,smm1$AME,col="red")
+points(1:30,smm2$AME,col="blue")
+
+cbind(smm1$AME,smm2$AME)
+round(sort(abs(smm1$AME-smm2$AME)),3)
+
+round(pR2(m1),3)
+round(pR2(m2),3)
+```
+
+Recomendación:
+
+  - Lo visto en este tema tiene una limitación, es el tratamiento sobre muestras autoponderadas es decir su alcance es limitado.
+  - Para incorporar este tratamiento en encuestas por muestreo se recomienda usar la librería survey y srvyr
+  - Se puede usar los métodos de agrupamiento para mejorar el rendimiento del modelo, muchas veces como una variable de estrato.

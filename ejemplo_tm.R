@@ -3,7 +3,7 @@ library(dplyr)
 library(tm)#Minería de texto
 library(udpipe)#Etiquetado
 library(hunspell)#Ortografía
-library(syuzhet)#Análisis de sentimiento
+library(syuzhet)#Análisis de sentimiento en español
 library(stringr)
 library(pdftools)
 library(ggplot2)
@@ -48,7 +48,7 @@ limpieza<-function(cp,extra=c(""),cambio=c("lapaz"="la paz")){
     tm_map(stripWhitespace) %>% 
     return()
 }
-bd_corpusd<-limpieza(bd_corpus, extra = c("hola"), cambio = c("’"="", "‘"=""))
+bd_corpusd<-limpieza(bd_corpus, extra = c("hola", "dice"), cambio = c("’"="", "‘"=""))
 bd_corpus[[1]]$content
 bd_corpusd[[1]]$content
 
@@ -71,6 +71,7 @@ ggplot(aux, aes(label = words, size = freq)) +
   theme_minimal()
 ###Análisis descriptivo: sentimiento
 auxs<-get_nrc_sentiment(aux$words,language = "spanish")
+rownames(auxs)<-aux$words
 barplot(apply(auxs,2,sum),horiz =T, las=1)
 auxsc<-auxs %>% mutate(words=aux$words, freq=aux$freq)
 ggplot(auxsc, aes(label = words, size = freq, col=fear)) +
@@ -80,7 +81,7 @@ auxsc<-auxsc %>% filter(words!="economía")
 wordcloud2(auxsc %>% select(words, freq), 
            color =ifelse(auxsc$fear==1,"red","black"))
 ###Análisis diagnóstico: asociaciones
-findAssocs(tdm_v,"arce",0.2)
+findAssocs(tdm_v,"ministro",0.1)
 ###Análisis diagnóstico: redes
 mxd<-as.matrix(dtm_v)%*%t(as.matrix(dtm_v))
 mxt<-as.matrix(tdm_v)%*%t(as.matrix(tdm_v))
@@ -92,7 +93,7 @@ tdm_reducido <- removeSparseTerms(tdm_v, sparse = 0.99)
 dim(tdm_reducido)
 mxt<-as.matrix(tdm_reducido)%*%t(as.matrix(tdm_reducido))
 #recomendación: reducir la cantidad de términos con base a las frecuencias
-g <- graph.adjacency(mxt, weighted = T, mode = 'undirected')
+g <- graph.adjacency(mxd, weighted = T, mode = 'undirected')
 g <- simplify(g)
 V(g)$label <- V(g)$name
 V(g)$degree <- degree(g)
@@ -106,6 +107,6 @@ visNetwork(nodes,edges)
 visNetwork(nodes,edges) %>% 
   visPhysics(enabled = FALSE)
 ###Análisis diagnóstico: agrupamiento
-kmeans(as.matrix(dtm_pdf),3)
-res<-kmeans(as.matrix(tdm_pdf),4)
+kmeans(as.matrix(dtm_v),3)
+res<-kmeans(as.matrix(dtm_v),3)
 data.frame(res$cluster)
