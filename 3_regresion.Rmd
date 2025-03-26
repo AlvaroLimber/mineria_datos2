@@ -28,6 +28,7 @@ $$\frac{dy}{d x_1}= \beta_1$$
 
 ## Regresión lineal
 
+0. Pregunta de investigación, revisión de literatura
 1. Base datos lista para el modelo (Unidad de investigación)
 2. Establecer la relación interés
 3. Definir el modelo de interés
@@ -35,17 +36,13 @@ $$\frac{dy}{d x_1}= \beta_1$$
 5. Validar el modelo
 6. Predecir a partir del modelo
 
+Causalidad vs Correlación
+
+![](https://static.wixstatic.com/media/f386a0_2fdc072afcc54d07b4e171954c30a2b5~mv2.png/v1/fill/w_568,h_332,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/f386a0_2fdc072afcc54d07b4e171954c30a2b5~mv2.png)
 
 ### Paso 1: Base de datos
 
-  - Encuesta a hogares 2021
-
-```{r}
-rm(list=ls())
-library(dplyr)
-library(haven)
-load("_data/eh21_vf.RData")
-```
+  - Encuesta a hogares 2023
 
 ### Paso 2: Establecer la relación de interés.
 
@@ -54,7 +51,8 @@ load("_data/eh21_vf.RData")
     + Priorizar alguna X
     + Explorativa 
     + Predictiva
-  * C: Edad, experiencia, departamento, #hij@s, pública/privada
+  * Variables de control
+  * Variables de disturbio
 
 Algunos comentarios sobre la calidad de este modelo:
 
@@ -65,15 +63,9 @@ Algunos comentarios sobre la calidad de este modelo:
 
 PO: Personas que trabajan, con 21 años o más de edad
 
-```{r}
-library(labelled)
-eh21pe %>% select(ylab,aestudio,area,s01a_02,s01a_03)
-
-bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
-bd %>% to_factor() %>% select(ylab,aestudio,area,s01a_02,s01a_03)
-```
-
 ### Paso 3: Definir el modelo a utilizar
+
+$$y=f(x)$$
 
 ```{r}
 ###################
@@ -82,7 +74,7 @@ library(dplyr)
 library(haven)
 library(labelled)
 library(ggplot2)
-load("_data/eh21_vf.RData")
+load("_data/eh23.RData")
 bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
 ###################
 #ylab
@@ -97,7 +89,6 @@ ggplot(bd,aes(s01a_03))+geom_bar()
 ggplot(bd,aes(area))+geom_bar()
 ggplot(bd,aes(to_factor(s01a_02)))+geom_bar()
 #modelo
-
 m1<-lm(ylab~aestudio,data = bd)#Modelo lineal; OLS MCO
 summary(m1)
 plot(m1)
@@ -117,67 +108,28 @@ m4<-lm(log(ylab)~ factor(aestudio)+
          ,data = bd)
 summary(m4)
 plot(m4)
-bd[9791,c("ylab","aestudio")]
-bd[6557,c("ylab","aestudio")]
-bd[2935,c("ylab","aestudio")]
 ```
 
 ### Paso 4: Optimizar el modelo
 
-```{r}
-# factores
-bd<-bd %>% mutate(rural=(area==2),
-              mujer=(s01a_02==2),
-              lp=(depto==2))
-
-m5<-lm(log(ylab)~ factor(aestudio)+
-         rural+s01a_03+mujer+lp
-         ,data = bd)
-summary(m5)
-# valores atípicos
-quantile(bd$ylab,c(0.01,0.99))
-
-bd1<-bd %>% filter(ylab>76 & ylab<12980)
-
-m6<-lm(log(ylab)~ factor(aestudio)+
-         rural+s01a_03+mujer+lp
-         ,data = bd1)
-summary(m6)
-plot(m6)
-bd1[7272,c("ylab","aestudio","mujer","rural","s01a_03","lp")]
-##########
-# stepwise
-rm(list=ls())
-library(dplyr)
-library(haven)
-library(labelled)
-library(ggplot2)
-load("_data/eh21_vf.RData")
-bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
-#paso 1: identificar las variables X
-bdaux<-bd %>% select(ylab, aestudio, s01a_03, s01a_02,area, depto, totper, tipohogar, cobersalud, tothrs)
-#paso 2: tipología de las variables
-bdaux<-bdaux %>% mutate(aestudio=factor(aestudio),
-                 area=factor(area),
-                 s01a_02=factor(s01a_02),
-                 depto=factor(depto),
-                 tipohogar=factor(tipohogar),
-                 cobersalud=factor(cobersalud))
-bdaux<-bdaux %>% filter(ylab>76 & ylab<12980)
-#paso 3: Algoritmo
-m1<-lm(log(ylab)~.,data=bdaux)
-summary(m1)
-m2<-step(m1)
-summary(m2)
-```
+- Tratamiento sobre variables de control
+- Tratamiento de datos atípicos
+- Stepwise: Regresión paso a paso (step)
 
 ### Paso 5: Validar el modelo
+
+- Residuos
+  + Normalidad
+  + Distancia de cook
+  + Varianza constante
+- Colinealidad
+  + VIF
+  + Inclusión de polinomios
 
 ```{r}
 #normalidad
 ee<-residuals(m2)
 hist(ee)
-
 #library(normtest)
 library(nortest)
 ad.test(ee)
@@ -213,26 +165,6 @@ summary(m3)
 ## interacciones entre variables
 m4<-lm(ylab~aestudio+s01a_03+aestudio:s01a_03 ,data=bdaux)
 summary(m4)
-```
-
-```{r}
-rm(list=ls())
-library(dplyr)
-library(haven)
-library(labelled)
-library(ggplot2)
-load("_data/eh21_vf.RData")
-bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
-#paso 1: identificar las variables X
-bdaux<-bd %>% select(ylab, aestudio, s01a_03, s01a_02,area, depto, totper, tipohogar, cobersalud, tothrs) %>% mutate(aestudio=factor(aestudio),
-           area=factor(area),
-        s01a_02=factor(s01a_02),
-          depto=factor(depto),
-              tipohogar=factor(tipohogar),
-         cobersalud=factor(cobersalud))
-
-m1<-lm(log(ylab)~., data= bdaux)
-summary(m1)
 
 #Colinealidad
 ##Variance Inflation Factors
@@ -281,10 +213,8 @@ exp(predict(m4))
 #base de datos nuevo
 bdp<-data.frame(s01a_03=c(23),
                 aestudio=factor(c(17)))
-
 exp(predict(m4,bdp))
 ```
-
 
 ## Probit y Logit
 
