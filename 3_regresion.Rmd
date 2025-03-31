@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Regresión
 
 $$y=f(x_1,x_2, \ldots)$$
@@ -28,21 +33,33 @@ $$\frac{dy}{d x_1}= \beta_1$$
 
 ## Regresión lineal
 
+$$y \in IR$$
+
+$$x_1, x_2, \ldots (mixtas)$$
+
+$$y=\beta_0+\beta_1 x_{1}+\beta_2 x_{2}+\ldots+\epsilon_i$$
+
+$$\epsilon_i\sim N(0, \sigma^2)$$
+Las variables $x$ son independientes mutuamente.
+
 0. Pregunta de investigación, revisión de literatura
 1. Base datos lista para el modelo (Unidad de investigación)
 2. Establecer la relación interés
 3. Definir el modelo de interés
 4. Optimizar el modelo
 5. Validar el modelo
-6. Predecir a partir del modelo
+6. Analizar/Predecir a partir del modelo
 
 Causalidad vs Correlación
 
 ![](https://static.wixstatic.com/media/f386a0_2fdc072afcc54d07b4e171954c30a2b5~mv2.png/v1/fill/w_568,h_332,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/f386a0_2fdc072afcc54d07b4e171954c30a2b5~mv2.png)
+Paso 0: Qué determina los ingresos de una persona?
 
 ### Paso 1: Base de datos
 
-  - Encuesta a hogares 2023
+- Encuesta a hogares 2023
+  + Mide todos los componentes del ingreso
+  + Cuenta con información socio económica de las personas
 
 ### Paso 2: Establecer la relación de interés.
 
@@ -51,17 +68,17 @@ Causalidad vs Correlación
     + Priorizar alguna X
     + Explorativa 
     + Predictiva
-  * Variables de control
-  * Variables de disturbio
+  * Variables de control: Variables X observables y relacionadas con y. 
+  * Variables de disturbio: Variables X no observables y relacionadas con y. 
 
 Algunos comentarios sobre la calidad de este modelo:
 
   + Variables omitidas
   + Se debe especificar la población objetivo de la manera más clara posible.
   + Se debe identificar la naturaleza de las covariables (X) 
-  + Se debe definir el alcance del modelo; muestral o inferencial 
+  + Se debe definir el alcance del modelo; muestral o inferencial (En el caso de encuestas)
 
-PO: Personas que trabajan, con 21 años o más de edad
+PO: **Personas que trabajan, con 25 años o más de edad**
 
 ### Paso 3: Definir el modelo a utilizar
 
@@ -75,12 +92,13 @@ library(haven)
 library(labelled)
 library(ggplot2)
 load("_data/eh23.RData")
-bd<-eh21pe %>% filter(s01a_03>=21 & !is.na(ylab))
+#Población objetivo
+bd<-eh23p %>% filter(s01a_03>=25 & is.na(ylab)==F)
 ###################
 #ylab
+summary(bd$ylab)
 ggplot(bd,aes(ylab))+geom_histogram()
 ggplot(bd,aes(ylab))+geom_boxplot()
-
 ggplot(bd,aes(log(ylab)))+geom_histogram()
 ggplot(bd,aes(log(ylab)))+geom_boxplot()
 # X
@@ -113,22 +131,40 @@ plot(m4)
 ### Paso 4: Optimizar el modelo
 
 - Tratamiento sobre variables de control
+  + Transformaciones
+  + Definir como factor
+  + Polinomios
+  + Interacciones
 - Tratamiento de datos atípicos
+  + Bonferroni. H0: observación $i$ es 
 - Stepwise: Regresión paso a paso (step)
+- Backward: Regresión hacia atras
+
+```{r}
+library(car)
+library(mixlm)
+residualPlots(m4)#HO: NO se requiere X^2
+outlierTest(m4)
+influenceIndexPlot(m4, vars="Cook")
+
+step()
+backward(m4)
+
+```
+
 
 ### Paso 5: Validar el modelo
 
 - Residuos
   + Normalidad
-  + Distancia de cook
   + Varianza constante
 - Colinealidad
   + VIF
-  + Inclusión de polinomios
+  + Inclusión de interacciones y polinomios
 
 ```{r}
 #normalidad
-ee<-residuals(m2)
+ee<-residuals(m4)
 hist(ee)
 #library(normtest)
 library(nortest)
@@ -137,44 +173,18 @@ lillie.test(ee)
 
 plot(density(scale(ee)))
 curve(dnorm,add=T,col="red")
-plot(m2)
+plot(m4)
 
 aux<-scale(ee)>(-4)
 
-#paso 3: Algoritmo
-m1<-lm(log(ylab)~.,data=bdaux %>% filter(aux))
-summary(m1)
-m2<-step(m1)
-summary(m2)
-
-ee<-residuals(m2)
-ad.test(ee)
-lillie.test(ee)
-
-plot(density(scale(ee)))
-curve(dnorm,add=T,col="red")
-plot(m2)
-
-# Distancia de Cook
-cc<-cooks.distance(m2)
-table(cc<0.01)
-plot(density(cooks.distance(m2)))
-# colinealidad
-m3<-lm(ylab~aestudio+s01a_03,data=bdaux)
-summary(m3)
-## interacciones entre variables
-m4<-lm(ylab~aestudio+s01a_03+aestudio:s01a_03 ,data=bdaux)
-summary(m4)
-
 #Colinealidad
 ##Variance Inflation Factors
-library(car)
-vif(m1)
-sqrt(vif(m1))>2
+vif(m4)
+sqrt(vif(m4))>2
 
 # Verificar si la varianza es constante (homocedástico) o no (heterocedástico)
 library(lmtest)
-bptest(m1) # H0:  Homocedasticidad
+bptest(m4) # H0:  Homocedasticidad
 
 #corrigiendo 
 library(rms)
@@ -187,20 +197,6 @@ bptest(model_1)
 bptest(model_2)
 
 robcov(model_2)
-```
-
-## Polinomios
-
-```{r}
-m2<-lm(log(ylab)~aestudio+poly(s01a_03,5),data=bdaux)
-summary(m2)
-
-m3<-lm(log(ylab)~aestudio+s01a_03+I(s01a_03^2)+I(s01a_03^4),data=bdaux)
-summary(m3)
-
-sqrt(vif(m2))>2
-vif(m2)
-bptest(m2)
 ```
 
 ## Predicciones
