@@ -64,7 +64,7 @@ Paso 0: Qué determina los ingresos de una persona?
 ### Paso 2: Establecer la relación de interés.
 
   * y: Ingreso laboral de la persona
-  * x: Educación, área, sexo
+  * x: Educación, área, sexo, edad, experiencia, horas trabajadas
     + Priorizar alguna X
     + Explorativa 
     + Predictiva
@@ -91,9 +91,15 @@ library(dplyr)
 library(haven)
 library(labelled)
 library(ggplot2)
+library(GGally)
 load("_data/eh23.RData")
 #Población objetivo
 bd<-eh23p %>% filter(s01a_03>=25 & is.na(ylab)==F)
+#Educación, área, sexo, edad, experiencia, horas trabajadas
+bd<-bd %>% select(ylab, aestudio, area, s01a_02, s01a_03, tothrs,  totper, ynolab, cmasi, s01a_10, depto)
+bd<-bd %>% na.omit()
+bd<-bd %>% to_factor()
+ggpairs(bd[,1:4])
 ###################
 #ylab
 summary(bd$ylab)
@@ -106,8 +112,9 @@ ggplot(bd,aes(aestudio))+geom_bar()
 ggplot(bd,aes(s01a_03))+geom_bar()
 ggplot(bd,aes(area))+geom_bar()
 ggplot(bd,aes(to_factor(s01a_02)))+geom_bar()
+ggpairs(bd[,1:5])
 #modelo
-m1<-lm(ylab~aestudio,data = bd)#Modelo lineal; OLS MCO
+m1<-lm(ylab~ aestudio,data = bd)
 summary(m1)
 plot(m1)
 
