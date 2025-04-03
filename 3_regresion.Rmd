@@ -126,10 +126,7 @@ m3<-lm(log(ylab)~ factor(aestudio),data = bd)
 summary(m3)
 plot(m3)
 
-m4<-lm(log(ylab)~ factor(aestudio)+
-         factor(area)+
-         s01a_03+
-         factor(s01a_02)
+m4<-lm(log(ylab)~ .
          ,data = bd)
 summary(m4)
 plot(m4)
@@ -152,13 +149,25 @@ library(car)
 library(mixlm)
 residualPlots(m4)#HO: NO se requiere X^2
 outlierTest(m4)
+aux<-outlierTest(m4)
+aux<-names(aux$rstudent)
+bd1<-bd %>% slice(- as.numeric(aux))
+bd1<-bd1 %>% mutate(aestudio=as.factor(aestudio))
 influenceIndexPlot(m4, vars="Cook")
+m5<-lm(log(ylab)~., data = bd1)
+m6<-step(m5)
+summary(m6)
+m7<-backward(m5)
 
-step()
-backward(m4)
-
+##a variables dummy 
+library(fastDummies)
+bd2<-dummy_cols(bd1, remove_first_dummy = T, remove_selected_columns=T)
+md1<-lm(log(ylab)~., data = bd2)
+md2<-step(md1)
+md3<-backward(md1, alpha = 0.05)
+summary(md2)
+summary(md3)
 ```
-
 
 ### Paso 5: Validar el modelo
 
@@ -171,52 +180,54 @@ backward(m4)
 
 ```{r}
 #normalidad
-ee<-residuals(m4)
+ee<-residuals(m5)
 hist(ee)
 #library(normtest)
-library(nortest)
+library(nortest)# H0: Normalidad
 ad.test(ee)
 lillie.test(ee)
 
 plot(density(scale(ee)))
 curve(dnorm,add=T,col="red")
-plot(m4)
-
-aux<-scale(ee)>(-4)
-
 #Colinealidad
 ##Variance Inflation Factors
-vif(m4)
-sqrt(vif(m4))>2
+vif(m5)
+sqrt(vif(m5))>2
 
 # Verificar si la varianza es constante (homocedástico) o no (heterocedástico)
 library(lmtest)
-bptest(m4) # H0:  Homocedasticidad
+bptest(m5) # H0:  Homocedasticidad
 
 #corrigiendo 
 library(rms)
-
-model_1 = lm(log(ylab)~s01a_02+s01a_03,data=bdaux)
-
-model_2 = ols(log(ylab)~s01a_02+s01a_03,data=bdaux,x=T,y=T)
-
+model_1 = lm(log(ylab)~s01a_02+s01a_03+aestudio,data=bd1)
 bptest(model_1)
+model_2 = ols(log(ylab)~s01a_02+s01a_03+aestudio ,data=bd1,x=T,y=T)
 bptest(model_2)
-
+summary(model_1)
 robcov(model_2)
 ```
 
 ## Predicciones
 
 ```{r}
-m4<-lm(log(ylab)~s01a_03+aestudio,data=bdaux)
-summary(m4)
-
-exp(predict(m4))
+ypred<-exp(predict(m5))
+bd1$ylab[1]
+ypred[1]
 #base de datos nuevo
-bdp<-data.frame(s01a_03=c(23),
-                aestudio=factor(c(17)))
-exp(predict(m4,bdp))
+bdp<-data.frame(
+  aestudio="17",
+  area="Urbana",  
+  s01a_02="2. Mujer",
+  s01a_03=20, 
+  tothrs=50,  
+  totper=1,   
+  ynolab=0,   
+  cmasi="Asiste",    
+  s01a_10="1. SOLTERO/A",
+  depto="La Paz" 
+)
+exp(predict(m5,bdp))
 ```
 
 ## Probit y Logit
