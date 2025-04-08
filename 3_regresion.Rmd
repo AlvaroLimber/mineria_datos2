@@ -262,39 +262,41 @@ library(dplyr)
 library(margins)# efectos marginales
 library(labelled)
 library(pscl)# Aproximación al ajuste del modelo
+library(car)
+library(mixlm)
 #data
-load("_data/eh21_vf.RData")
+load("_data/eh23.RData")
 
-bd<-eh21pe %>% mutate(pobreza=(p0==1)) %>% 
-  filter(s01a_03>=20 & s01a_03<=30)
+bd<-eh23p %>% mutate(pobreza=(p0==1)) %>% 
+  filter(s01a_03>=25)
 
 bd<-bd %>% mutate(aestudio=to_factor(aestudio),
               rural=(area==2),
               depto=to_factor(depto),
               mujer=(s01a_02==2)
-              )
+              ) %>% select(pobreza, aestudio, rural, depto, mujer, edad=s01a_03)
 
 table(bd$pobreza)
 
-m1<-glm(pobreza~aestudio+s01a_03+depto+mujer+rural, 
+m1<-glm(pobreza~., 
         data=bd, family=binomial(link="logit"))
-m2<-glm(pobreza~aestudio+s01a_03+depto+mujer+rural, 
+m2<-glm(pobreza~., 
         data=bd, family=binomial(link="probit"))
 
 mm1<-margins(m1)
 smm1<-summary(mm1)
+plot(mm1)
 
 mm2<-margins(m2)
 smm2<-summary(mm2)
-
-plot(1:30,smm1$AME,col="red")
-points(1:30,smm2$AME,col="blue")
-
-cbind(smm1$AME,smm2$AME)
-round(sort(abs(smm1$AME-smm2$AME)),3)
+plot(mm2)
 
 round(pR2(m1),3)
 round(pR2(m2),3)
+
+outlierTest(m1)
+bd[18708,] %>% View()
+influenceIndexPlot(m1, vars="Cook")
 ```
 
 Recomendación:
@@ -302,3 +304,4 @@ Recomendación:
   - Lo visto en este tema tiene una limitación, es el tratamiento sobre muestras autoponderadas es decir su alcance es limitado.
   - Para incorporar este tratamiento en encuestas por muestreo se recomienda usar la librería survey y srvyr
   - Se puede usar los métodos de agrupamiento para mejorar el rendimiento del modelo, muchas veces como una variable de estrato.
+  - Para garantizar que el modelo este libre de multicolinealidad se recomienda usar componentes principales
