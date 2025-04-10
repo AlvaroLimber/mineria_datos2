@@ -255,6 +255,10 @@ Aplicación en R
 
 $$Pobreza=f(sexo, edad, area,dep,...)$$
 
++ Pobreza monetaria: Ingreso total del hogar. (Hogar). 
+  - Linea de pobreza: Moderada (alimentos, no alimentos), Extrema (alimentos) 
++ Pobreza monetaria: Gasto
+
 ```{r}
 rm(list=ls())
 library(haven)
@@ -266,22 +270,32 @@ library(car)
 library(mixlm)
 #data
 load("_data/eh23.RData")
-
+eh23p$p0
+eh23p$pext0
+unique(eh23p$zext)
+#Población objetivo: Personas de 25 años o más
 bd<-eh23p %>% mutate(pobreza=(p0==1)) %>% 
   filter(s01a_03>=25)
-
+# X?
 bd<-bd %>% mutate(aestudio=to_factor(aestudio),
               rural=(area==2),
               depto=to_factor(depto),
-              mujer=(s01a_02==2)
-              ) %>% select(pobreza, aestudio, rural, depto, mujer, edad=s01a_03)
+              mujer=(s01a_02==2),
+              #5min
+              edad=s01a_03,
+              ecivil=to_factor(s01a_10),
+              totper
+              ) %>% select(pobreza, aestudio, rural, depto, mujer, edad, ecivil, totper)
+bd<-bd %>% na.omit()
 
-table(bd$pobreza)
+prop.table(table(bd$pobreza))*100
 
-m1<-glm(pobreza~., 
-        data=bd, family=binomial(link="logit"))
-m2<-glm(pobreza~., 
-        data=bd, family=binomial(link="probit"))
+m1<-glm(pobreza ~ ., 
+        data = bd, 
+        family=binomial(link="logit"))
+m2<-glm(pobreza ~ ., 
+        data=bd, 
+        family=binomial(link="probit"))
 
 mm1<-margins(m1)
 smm1<-summary(mm1)
@@ -291,12 +305,13 @@ mm2<-margins(m2)
 smm2<-summary(mm2)
 plot(mm2)
 
-round(pR2(m1),3)
-round(pR2(m2),3)
+round(pR2(m1), 3)
+round(pR2(m2), 3)
 
 outlierTest(m1)
-bd[18708,] %>% View()
+bd[18693,] %>% View()
 influenceIndexPlot(m1, vars="Cook")
+plot(m2)
 ```
 
 Recomendación:
