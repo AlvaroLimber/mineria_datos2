@@ -1,0 +1,37 @@
+---
+title: "Práctica Global"
+subtitle: "Minería de datos 2"
+author: "MSc. Alvaro Chirino Gutierrez"
+date: ""
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Métodos de regresión
+
+1. Utilice la última encuesta de demografía y salud y proponga un modelo que explique el índice de masa corporal de las mujeres de 14 a 59 años. Valide y comente los resultados del modelo.
+2. Utilice la última encuesta a hogares y proponga un modelo que explique los gastos en salud a nivel del hogar. Valide y comente los resultados del modelo.
+3. Utilice la última encuesta a hogares y proponga un modelo que explique el embarazo adolescente. Valide y comente los resultados del modelo.
+4. Utilice la última encuesta a hogares y proponga un modelo que explique el ingreso laboral de las personas de 18 años o más, incorpore una variable basada en cluster. Valide y comente los resultados del modelo.
+5. Utilice la última encuesta a hogares y proponga un modelo que explique el ingreso laboral de las personas de 18 años o más, a partir de todas las covariables propuestas genere un modelo que incluya únicamente los componentes principales. Valide y comente los resultados del modelo.
+
+# Modelado de series de tiempo en R
+
+1. Utilice el última dossier de UDAPE:
+  + Seleccione un excel de interés y construya todas las series de tiempo (objeto ts) que se puedan. 
+  + Verifique si son aptas para el modelamiento
+  + Realice el modelamiento para cada serie y un pronóstico para los próximos 12 puntos.
+2. A partir de la API del banco mundial seleccione al menos 2 indicadores de interés para Bolivia e implemente los modelos de series de tiempo vistos en clase. 
+3. A partir de la base de datos de exportación del INE, con datos a partir del 2014 elija 2 productos y realice un pronóstico para los siguientes 24 meses.
+
+# Métodos de Clasificación
+
+1. Usando la última EH disponible para la sección de discriminación, construya una variable $Y$ que permita identificar si la persona fue discriminada por cualquier motivo. Proponga covariables y realice los modelos de clasificación; logit, probit, Naive Bayes, CART y KNN
+2. Usando la última EH disponible defina una variable $Y$ con base a alguna enfermedad crónica. Proponga covariables y realice los modelos de clasificación; logit, probit, Naive Bayes, CART y KNN
+3. Usando las bases de datos de entrenamiento y test del enlace https://www.kaggle.com/datasets/teejmahal20/airline-passenger-satisfaction?resource=download Proponga covariables y evalue cuando sea posible los modelos de clasificación; logit, probit, Naive Bayes, CART y KNN para la variable satisfacción.
+
+# Introducción a redes neuronales
+
+1. Implemente un modelo de clasificación basado en redes neuronales para los ejercicios de clasificación, utilice la librería neuralnet y nnet, con 2 nodos y otro con la misma cantidad de nodos que covariables. Comente los resultados.
+2. Usando la última encuesta a hogares para los/las jefes de hogar, proponga un modelo basado en redes neuronales que permita clasificar la pobreza moderada (p0), utilice al menos 10 covariables y compare contra algún otro método de clasificación. 
