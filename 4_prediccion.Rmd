@@ -1,0 +1,445 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Modelos de predicción de series de tiempo
+
+Una serie de tiempo se define como:
+
+$$Y_t \in \mathbb{R}^m$$
+
+Si:
+
+- $m=1$ es una serie de tiempo univariante
+- $m>1$ es una serie de tiempo multivariante
+
+El número de *periodos observados* por año se llama *frecuencia* (s).
+
+- Anual: s=1
+- Semestral: s=2
+- Trimestral: s=4
+- Mensual: s=12
+- Diaria: s=365
+
+## Diferencias y tasas de crecimiento
+
+La primera diferencia de una serie se define como:
+
+$$\vartriangle Y_t= Y_t-Y_{t-1}$$
+
+$$\vartriangle^2{Y_t}= \vartriangle{Y_t}-\vartriangle{Y_{t-1}} $$
+$$\vartriangle_s Y_t= Y_t-Y_{t-s}$$
+
+
+Tasa de crecimiento de un periodo (t, t-1) en porcentaje se define como:
+
+$$Q_t=100\left( \frac{\vartriangle Y_t}{Y_{t-1}}\right)=100\left( \frac{Y_t}{Y_{t-1}}-1 \right)$$
+Cuando la frecuencia es mayor a 1 (s>1) se recomienda:
+
+$$G_t=100\left( \frac{\vartriangle_s Y_t}{Y_{t-s}}\right)=100\left( \frac{Y_t}{Y_{t-s}}-1 \right)$$
+
+$$Q_t \simeq 100 \vartriangle{log Y_t}$$
+
+## Estacionariedad 
+
+> Propiedad estadística clave en la que las características de la serie no cambian a lo largo del tiempo.
+
+$$Y_t\sim (.)$$
+
+- Media constante: 
+
+$$E[Y_t]=\mu$$
+
+- Varianza constante: 
+
+$$V(Y_t)=\sigma^2$$
+- Autocovarianza es independiente del tiempo:
+
+$$cov(Y_t, Y_{t-k})=\gamma(k)$$
+
+## Ergodicidad
+
+> Las características de una serie de tiempo pueden ser inferidas a partir de una única realización de la serie en el tiempo, sin necesidad de observar múltiples realizaciones independientes.
+
+Una serie es ergódica si:
+
+- Es estacionaria
+- Asintóticamente independientes
+
+$$\lim_{k \to \infty} \text{Corr}(Y_t, Y_{t+k}) = 0$$
+
+## Aplicación en R
+
+### API Banco Mundial
+
+- *wbstats*
+- WDI
+
+```{r}
+rm(list=ls())
+library(wbstats)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(ggfortify)
+library(plotly)
+gdp<-wb_search("gdp")
+tax<-wb_search("tax")
+wb_search(pattern = "price index") 
+bd<-wb_data("NY.GDP.MKTP.CD", country = "BO", lang = "es")
+bd2<-wb_data("NY.GDP.MKTP.CD", country = c("BO","PE"), lang = "es")
+class(bd$date)
+bd<-bd %>% rename(y=5)
+ggplot(bd, aes(date, y)) + geom_line()
+```
+
+### Definiendo una serie de tiempo en R
+
+```{r}
+#ts(bd$y, frequency = 1, start = 1960)
+gdp<-ts(bd$y, frequency = 1, start = c(1960,1))
+plot(gdp)
+autoplot(gdp)
+ggplotly(autoplot(gdp))
+#diferencia
+dgdp<-diff(gdp)
+plot(dgdp)
+#TASA DE CRECIMIENTO
+plot(100*diff(log(gdp)))
+Qt<-100*(diff(gdp)/bd$y[-1])
+points(Qt, col="red", type = "l")
+
+AirPassengers
+plot(AirPassengers)
+autoplot(AirPassengers)
+```
+
+### Verificando estacionariedad
+
+Test de Dickey-Fuller aumentada
+
+- H0: Los datos *no son estacionarios*
+- H1: Los datos son estacionarios
+
+```{r}
+library(tseries)
+adf.test(gdp)
+adf.test(dgdp)
+adf.test(Qt)
+adf.test(diff(gdp,differences = 2))
+plot(AirPassengers)
+adf.test(AirPassengers)
+```
+
+Función de autocorrelación
+
+```{r}
+acf(gdp)
+acf(dgdp)
+acf(AirPassengers)
+plot(decompose(AirPassengers))
+s1<-diff(AirPassengers, lag = 12)
+acf(s1)
+plot(decompose(s1))
+#Función de autocorrelación parcial
+pacf(AirPassengers)
+```
+
+## Modelos de suavizado exponencial
+
+$$Y_t=f(Nivel, Tendencia,Estacionalidad,Ruido)$$
+
+- Modelo ETS en R
+  + Error: Aditivo (A), multiplicativo (M)
+  + Tendencia: Sin tendencia (N), aditivo (Ad), multiplicativo (M)
+  + Estacional: Ninguna (N), aditivo (Ad), multiplicativo (M)
+
+```{r}
+library(forecast)
+m0<-ets(gdp)
+summary(m0)
+plot(m0)
+m0p<-forecast(m0, h=5)
+m0p
+plot(m0p)
+m02<-ets(diff(gdp,differences = 2))
+plot(forecast(m02,h=5))
+
+m1<-ets(AirPassengers)
+summary(m1)
+plot(m1)
+plot(forecast(m1, h=36))
+plot(forecast(m1, h=12), xlim=c(1960, 1965))
+```
+
+## Adecuación del Dataset y Preprocesamiento
+
+Preprocesar y transformar los datos para que puedan ser utilizados en el análisis de series de tiempo. Esto implica convertir fechas, ordenar registros y estructurar el dataset en un formato temporal.
+
+La transformación de datos incluye:
+
+- Adecuación del dataset mediante un pivot
+- Conversión de la columna de fecha al formato `Date`.
+- Transformación a un objeto de series de tiempo
+
+Ejemplo de pivot: RECAUDACIÓN RENTA INTERNA POR TIPO DE IMPUESTOS (UDAPE) ANUAL
+
+```{r}
+rm(list = ls())
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(lubridate)
+library(ggplot2)
+library(forecast)
+library(plotly)
+library(tseries)
+bd<-read_excel("_data/c01030401.xls",range = "A9:AM44")
+aux<-unique(bd$`D E T A L L E`)
+bdaux<-bd %>% rename(detalle=1) %>% filter(detalle==aux[2]) %>% select(-ABREV.)
+
+serie<-bdaux %>% pivot_longer(!detalle, names_to = "periodo", values_to = "valor")
+
+#limpieza de texto
+serie<-serie %>% 
+  mutate(periodo=str_replace(periodo, fixed("(1)"),""), 
+         periodo=str_replace(periodo, fixed("(2)"),""),
+         periodo=str_replace(periodo, fixed("(p)"),""),
+         periodo=str_replace(periodo, fixed("*"),""),
+         periodo=str_replace(periodo, fixed("p)"),""),
+         periodo=as.numeric(periodo))
+
+ggplot(serie, aes(x=periodo, y=valor))+geom_line()
+
+g1<-ggplot(serie, aes(x=periodo, y=valor))+geom_line(color="darkgreen")+theme_minimal()
+
+g1
+ggplotly(g1)
+
+s1<-ts(serie$valor, frequency = 1, start = c(1987, 12))
+adf.test(s1)
+adf.test(diff(s1, differences = 3))
+acf(diff(s1))
+m1<-ets(s1)
+plot(forecast(m1,5))
+```
+
+Ejemplo de pivot: Exportaciones según Actividad Económica y Producto por Año y Mes, 1992 - 2024
+
+```{r}
+bd<-read_excel("_data/Bolivia - Exportaciones segun Actividad Economica y Producto por Año y Mes, 1992 - 2024.xlsx", range = "B5:OG101")
+
+aux<-unique(bd$...1)
+
+bdaux<-bd %>% rename(detalle=1) %>% filter(detalle==aux[2])
+
+seriem<-bdaux %>% pivot_longer(!detalle, names_to = "periodo", values_to = "valor")
+
+mm<-rep(1:12,33)
+aa<-rep(1992:2024, each=12)
+seriem$periodo<-my(paste0(mm,"-",aa))[-396]
+
+ggplot(seriem, aes(x=periodo, y=valor))+geom_line()
+
+g1<-ggplot(seriem, aes(x=periodo, y=valor))+geom_line(color="darkgreen")+theme_minimal()
+
+g1
+ggplotly(g1)
+
+s2<-ts(seriem$valor, frequency = 12, start = c(1992, 1))
+plot(s2)
+adf.test(s2)
+adf.test(diff(s2))
+acf(s2)
+acf(diff(s2))
+plot(decompose(s2))
+plot(decompose(diff(s2)))
+
+m2<-ets(s2)
+summary(m2)
+pp<-forecast(m2,h=36)
+
+plot(forecast(m2,h=24), xlim=c(2015,2027))
+plot(forecast(m2,h=12))
+#aplicando diferencia 
+s2_diff<-diff(s2)
+m3<-ets(s2_diff)
+fc_diff<-forecast(m3,h=36)
+plot(fc_diff)
+# Obtener los valores originales antes de la diferenciación
+fc_original<-cumsum(fc_diff$mean)+tail(s2, 1)[1]
+
+s3<-ts(c(s2,fc_original), frequency = 12, start = c(1992, 1))
+
+autoplot(s3)+geom_vline(xintercept = 2024, col="red")
+
+impuestos<-s1
+exportaciones<-s2
+save(gdp, impuestos, exportaciones, file="_data/seriesBO.RData")
+```
+
+## Modelo ARIMA
+
+Es un modelo univariante que permite trabajar con 2 componetes; parte autoregresiva (AR) y medias móviles (MA). 
+
+### Modelo AR(p)
+
+$$y_t = \sum_{i=1}^{p} \phi_i y_{t-i} + \epsilon_t$$
+
+$$\epsilon_t = y_t - \sum_{i=1}^{p} \phi_i y_{t-i}$$
+
+Donde $\phi$ corresponde a los parámetros a estimar, $\epsilon_t$ el ruido blanco, con: 
+
+$$E[\epsilon_t]=0 \quad V(\epsilon_t)=\sigma^2 \quad Cov(\epsilon_t, \epsilon_{t-h})=0$$
+
+Por último, pero no estricto:
+
+$$\epsilon_t\sim N(0, \sigma^2)$$
+$p$ es el número de términos autoregresivos (AR) que se incluirán en el modelo. Es decir, cuántos rezagos de la serie se utilizan para predecir el valor actual de la serie. Para determinar el valor de $p$:
+
+- Análisis de la ACF (Autocorrelation Function): El número de rezagos significativos en la ACF.
+- Criterios de información: *AIC* (Akaike Information Criterion) o BIC (Bayesian Information Criterion) son utilizados para seleccionar el valor de $p$ que minimiza la función de pérdida. 
+- Criterio de la parcimonia: El valor de $p$ debe ser el menor posible que aún capture la dinámica de la serie temporal. Es decir, agregar más rezagos no debe mejorar significativamente el ajuste.
+
+## Modelo MA(q)
+
+$$y_t = \epsilon_t + \sum_{j=1}^{q} \theta_j \epsilon_{t-j}$$
+
+$$\epsilon_t = y_t - \sum_{j=1}^{q} \theta_j \epsilon_{t-j}$$
+
+$q$ es el número de términos de media móvil (MA) que se incluirán en el modelo. Es decir, cuántos rezagos de los errores (residuos) se utilizarán para modelar la serie temporal. La elección de $q$ se hace:
+
+- Análisis de la PACF (Partial Autocorrelation Function): Muestra la autocorrelación de la serie temporal después de eliminar el efecto de los rezagos intermedios.
+- Criterios de información: AIC o BIC
+
+## Modelo ARIMA (p,d,q)
+
+$$y_t = \sum_{i=1}^{p} \phi_i y_{t-i} + \epsilon_t + \sum_{j=1}^{q} \theta_j \epsilon_{t-j}
+$$
+
+$$\epsilon_t = y_t - \sum_{i=1}^{p} \phi_i y_{t-i} - \sum_{j=1}^{q} \theta_j \epsilon_{t-j}$$
+$$
+E(\epsilon_t) = 0 \quad Var(\epsilon_t) = \sigma^2 \quad Cov(\epsilon_t, \epsilon_{t-h}) = 0 \quad \text{para todo} \, h \neq 0
+$$
+
+La d en un modelo ARIMA(p, d, q) representa el grado de diferenciación de la serie temporal, que se utiliza para hacerla estacionaria. 
+
+> Notas:
+
+- El modelo ARIMA(p,d,q) se usa para series sin componentes estacional
+- El modelo ARIMA(p,d,q)SARIMA(P,D,Q) se usa para series con componente estacional
+
+## Modelo ARIMAX 
+
+$$
+y_t = \sum_{i=1}^{p} \phi_i y_{t-i} + \epsilon_t + \sum_{j=1}^{q} \theta_j \epsilon_{t-j} + \sum_{k=1}^{k} \beta_k X_{t-k}
+$$
+
+> Nota: Para las predicciones del modelo ARIMAX se requiere predicciones de los regresores $X$. 
+
+![](_fig/arimaflowchart.png)
+
+## Aplicación en R
+
+```{r}
+rm(list=ls())
+library(dplyr)
+library(forecast)#ARIMA
+library(ggplot2)
+library(plotly)
+library(tseries)#TEST
+library(lmtest)#TEST
+library(writexl)#EXCEL
+load("_data/seriesBO.RData")
+#Manual
+plot(gdp)
+gdp %>% autoplot() %>% ggplotly()
+gdp %>% diff() %>% plot()
+
+gdp %>% diff() %>% adf.test()
+
+gdp %>% diff(differences = 2) %>% adf.test()
+
+gdp %>% log() %>% diff(differences = 2) %>% adf.test()
+
+gdp %>% log() %>% diff(differences = 2) %>% ggtsdisplay()
+
+gdp %>% diff(differences = 2) %>% ggtsdisplay()
+
+m1<-arima(gdp, order = c(2,2,4))
+summary(m1)
+checkresiduals(m1)# H0: Residuos no autocorrelacionados
+coeftest(m1)
+autoplot(m1)
+m1f<-forecast(m1, h=5) # LISTA
+autoplot(m1f)
+#automático
+m1a<-auto.arima(gdp)
+m1al<-auto.arima(log(gdp))
+summary(m1a)
+checkresiduals(m1a)# H0: Residuos no autocorrelacionados
+autoplot(m1a)
+m1af<-forecast(m1a, h=5) # LISTA
+autoplot(m1af)
+gdpf<-cbind(gdp, fitted(m1), fitted(m1a))
+autoplot(gdpf)
+write_xlsx(list("arima224"=data.frame(m1f),
+                "arima222"=data.frame(m1af)), "arima.xlsx")
+################################################################
+m2a<-auto.arima(impuestos)
+summary(m2a)
+checkresiduals(m2a)
+autoplot(m2a)
+aux<-forecast(m2a, h=5)
+autoplot(forecast(m2a, h=5))+xlim(c(2010,2026))
+
+m2al<-auto.arima(log(impuestos))
+summary(m2al)
+checkresiduals(m2al)
+autoplot(m2al)
+aux<-forecast(m2al, h=5)
+mean(aux$residuals)
+aux$lower
+aux$upper
+aux<-data.frame(aux)
+auxts<-ts(exp(aux$Point.Forecast), frequency = 1, start = 2024)
+autoplot(cbind(impuestos, auxts))
+################################################################
+m3a<-auto.arima(log(exportaciones))
+summary(m3a)
+checkresiduals(m3a)
+autoplot(m3a)
+autoplot(forecast(m3a, h=24))
+################################################################
+m4a<-auto.arima(AirPassengers)
+summary(m4a)
+checkresiduals(m4a)
+autoplot(m4a)
+autoplot(forecast(m4a, h=24))
+###########################
+#ARIMAX
+###########################
+arima(impuestos, order=c(0,1,1), xreg = gdp)
+impuestos
+gdp
+gdp87<-window(gdp, start=1987)
+cor(gdp87, impuestos)
+
+mx<-arima(impuestos, order=c(0,1,1), xreg = gdp87)
+summary(mx)
+AIC(mx)
+AIC(m2a)
+coeftest(mx)
+checkresiduals(mx)
+autoplot(mx)
+mx
+
+forecast(mx, h=5, xreg = m1af$mean)
+
+aux<-predict(mx, newxreg = m1af$mean)
+autoplot(cbind(impuestos,aux$pred))
+autoplot(forecast(m2a, h=5))
+autoplot(forecast(m1a, h=5))
+```
