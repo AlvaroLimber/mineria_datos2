@@ -103,7 +103,7 @@ plot(gdp)
 autoplot(gdp)
 ggplotly(autoplot(gdp))
 #diferencia
-dgdp<-diff(gdp)
+dgdp<-diff(gdp)#dif(y,d=1)
 plot(dgdp)
 #TASA DE CRECIMIENTO
 plot(100*diff(log(gdp)))
@@ -124,6 +124,9 @@ Test de Dickey-Fuller aumentada
 
 ```{r}
 library(tseries)
+gdp<-na.omit(gdp)
+dgdp<-na.omit(dgdp)
+Qt<-na.omit(Qt)
 adf.test(gdp)
 adf.test(dgdp)
 adf.test(Qt)
