@@ -443,13 +443,35 @@ clase_pre<-predict(m1, bdtest)
 
 t1<-table(bdtest$Species,clase_pre)
 confusionMatrix(t1)
+
+control <- trainControl(method = "cv", number = 5)
+modelo_cv <- train(Species~., data = bdtrain,
+                   method = "C5.0",
+                   trControl = control,
+                   tuneGrid = expand.grid(trials = 1:10,
+                                          model = "tree",
+                                          winnow = FALSE))
+
+# Ver resultados
+print(modelo_cv)
+plot(modelo_cv)
 ```
 
 ### CART
 
-+ Standar Deviation Reduction
++ Standar Deviation Reduction (Regresión)
 
 $$SDR=\sigma_T-\sum_c\frac{T_i}{T}*\sigma_{T_i}$$
++ Entropía (clasificación)
+
+$$
+\text{Entropía}(t) = - \sum_{i=1}^{k} p_i \log_2(p_i)
+$$
++ Gini (clasificación)
+
+$$
+\text{Gini}(t) = 1 - \sum_{i=1}^{k} p_i^2
+$$
 
 ```{r}
 set.seed(1307)
