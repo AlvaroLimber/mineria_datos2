@@ -610,15 +610,17 @@ rm(list = ls())
 library(nnet)
 library(caret)
 bd<-iris
+set.seed(754)
 aux<-sample(c(1,2),nrow(bd),replace = T, prob = c(0.7,0.3))
 bdtrain<-bd[aux==1,]
 bdtest<-bd[aux==2,]
-
+set.seed(753)
 m5<-nnet(Species~.,data=bdtrain,size=3)
 summary(m5)
 m5p<-predict(m5,bdtest,type = "class")
 m5p
 t1<-table(m5p,bdtest$Species)
+t1
 confusionMatrix(t1)
 ```
 
@@ -805,7 +807,7 @@ bd<-bd %>%left_join(
   eh23v %>% select(folio, internet=s06a_19)
 )
 bd<-bd %>% filter(edad>=18)
-bd<-bd %>% mutate(ylab=replace_na(ylab,0))
+bd<-bd %>% mutate(ylab=replace_na(ylab,0))#supuesto
 bd<-na.omit(bd)
 ##############################
 # 0. Variable de Clasificación
