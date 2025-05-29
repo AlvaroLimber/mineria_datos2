@@ -608,13 +608,13 @@ confusionMatrix(t1)
 #######################
 rm(list = ls())
 library(nnet)
+library(caret)
 bd<-iris
 aux<-sample(c(1,2),nrow(bd),replace = T, prob = c(0.7,0.3))
 bdtrain<-bd[aux==1,]
 bdtest<-bd[aux==2,]
 
 m5<-nnet(Species~.,data=bdtrain,size=3)
-
 summary(m5)
 m5p<-predict(m5,bdtest,type = "class")
 m5p
@@ -622,10 +622,150 @@ t1<-table(m5p,bdtest$Species)
 confusionMatrix(t1)
 ```
 
-## Ejemplo EH
+## Ejemplo del funcionamiento de una red neuronal
 
-  - Dataset: EH 21
-  - Y (GRUPO): Área Urbano/rural
+- Dataset con 2 covariables y una y (binaria)
+- La capa oculta tiene 2 neuronas
+- 1 salida con activación sigmoide
+- Pesos aleatorios
+- 2 iteraciones usando el algoritmo backpropagation con descenso del gradiente
+
+$$\sigma(z)=\frac{1}{1+e^{-z}}$$
+Capa oculta
+
+$$
+\begin{aligned}
+  z_{h1} &= w_{11}x_1 + w_{12}x_2 + b_1 \\
+  a_{h1} &= \sigma(z_{h1}) \\
+  z_{h2} &= w_{21}x_1 + w_{22}x_2 + b_2 \\
+  a_{h2} &= \sigma(z_{h2})
+\end{aligned}
+$$
+
+Capa de salida:
+
+$$
+\begin{aligned}
+  z_o &= w_{o1}a_{h1} + w_{o2}a_{h2} + b_o \\
+  \hat{y} &= \sigma(z_o)
+\end{aligned}
+$$
+SGD es un método de optimización para minimizar la función de error actualizando los pesos con **una sola observación a la vez**.
+
+$$
+\theta^{(t+1)} = \theta^{(t)} - \eta \cdot \nabla_\theta \, \mathcal{L}^{(i)}(\theta)
+$$
+
+Donde:
+- $\theta$: peso o parámetro a ajustar
+- $\eta$: tasa de aprendizaje
+- $\mathcal{L}^{(i)}$: función de pérdida para la i-ésima observación
+- $\nabla_\theta \mathcal{L}^{(i)}$: gradiente (derivada) del error con respecto a ese peso
+
+$$
+\begin{aligned}
+  \delta_o &= (\hat{y} - y) \cdot \sigma'(z_o) \\
+  \delta_{h1} &= \delta_o \cdot w_{o1} \cdot \sigma'(z_{h1}) \\
+  \delta_{h2} &= \delta_o \cdot w_{o2} \cdot \sigma'(z_{h2})
+\end{aligned}
+$$
+
+$$
+\theta_{nueva} = \theta_{anterior} - \eta \cdot \frac{\partial E}{\partial \theta}
+$$
+
+```{r}
+library(nnet)
+# Dataset
+x <- data.frame(
+  x1 = c(0.00, 0.77),  # edad normalizada
+  x2 = c(0.25, 0.67)   # presión normalizada
+)
+y <- c(0, 1)
+
+#Pesos aleatorios
+set.seed(123)
+w <- runif(9, min = -0.5, max = 0.5)
+names(w) <- c(
+  "w11", "w12", "b1",     # pesos para h1
+  "w21", "w22", "b2",     # pesos para h2
+  "wo1", "wo2", "bo"      # pesos para salida
+)
+w
+#Sigmoide y su derivada
+sigmoid <- function(z) 1 / (1 + exp(-z))
+sigmoid_deriv <- function(z) sigmoid(z) * (1 - sigmoid(z))
+
+#iteración
+iteracion_manual <- function(x1, x2, y_true, w, lr = 0.1) {
+  # Propagación
+  zh1 <- w["w11"] * x1 + w["w12"] * x2 + w["b1"]
+  ah1 <- sigmoid(zh1)
+  
+  zh2 <- w["w21"] * x1 + w["w22"] * x2 + w["b2"]
+  ah2 <- sigmoid(zh2)
+
+  zo <- w["wo1"] * ah1 + w["wo2"] * ah2 + w["bo"]
+  y_hat <- sigmoid(zo)
+
+  # Errores
+  delta_o <- (y_hat - y_true) * sigmoid_deriv(zo)
+  delta_h1 <- delta_o * w["wo1"] * sigmoid_deriv(zh1)
+  delta_h2 <- delta_o * w["wo2"] * sigmoid_deriv(zh2)
+
+  # Actualización de pesos salida
+  w["wo1"] <- w["wo1"] - lr * delta_o * ah1
+  w["wo2"] <- w["wo2"] - lr * delta_o * ah2
+  w["bo"]  <- w["bo"]  - lr * delta_o
+
+  # Actualización pesos ocultos
+  w["w11"] <- w["w11"] - lr * delta_h1 * x1
+  w["w12"] <- w["w12"] - lr * delta_h1 * x2
+  w["b1"]  <- w["b1"]  - lr * delta_h1
+
+  w["w21"] <- w["w21"] - lr * delta_h2 * x1
+  w["w22"] <- w["w22"] - lr * delta_h2 * x2
+  w["b2"]  <- w["b2"]  - lr * delta_h2
+
+  list(y_hat = y_hat, pesos = w)
+}
+#Primera iteración
+w1 <- iteracion_manual(x[1,1], x[1,2], y[1], w)
+cat("Predicción 1: ", round(w1$y_hat, 4), "\n")
+
+w2 <- iteracion_manual(x[2,1], x[2,2], y[2], w1$pesos)
+cat("Predicción 2: ", round(w2$y_hat, 4), "\n")
+#Segunda iteración
+w3 <- iteracion_manual(x[1,1], x[1,2], y[1], w2$pesos)
+cat("Predicción 3: ", round(w3$y_hat, 4), "\n")
+
+w4 <- iteracion_manual(x[2,1], x[2,2], y[2], w3$pesos)
+cat("Predicción 4: ", round(w4$y_hat, 4), "\n")
+```
+
+
+## Red Neuronal VS OLS
+
+Un modelo OLS coincide en resultados con una red neuronal cuando: no se define capa oculta, función lineal y sin entrenamiento en la capa de salida.
+
+```{r}
+#ols
+m0<-lm(Murder~., data=USArrests)
+summary(m0)
+#nnet
+m1 <- nnet(Murder  ~ . , data = USArrests, 
+                    size = 0,
+                    linout = TRUE,
+                    skip = TRUE,
+                    trace = FALSE,
+                    maxit = 500)
+m1$wts  # Pesos de la red
+```
+
+## Ejemplo de las técnicas de clasificación con la EH
+
+  - Dataset: EH 23
+  - Y (GRUPO): Discriminación
   - Unidad de análisis: Personas de 18 años o más
   - X (COVARIABLES): 
     + Sexo 
@@ -640,6 +780,7 @@ confusionMatrix(t1)
 ```{r}
 rm(list = ls())
 library(dplyr)
+library(tidyr)
 library(haven)
 library(labelled)
 library(caret)
@@ -648,9 +789,10 @@ library(rpart)
 library(rpart.plot)
 library(naivebayes)
 library(class)
+library(nnet)
 #############################
-load("_data/eh21_vf.RData")
-bd<-eh21pe %>% select(folio,area,
+load("_data/eh23.RData")
+bd<-eh23p %>% select(folio, nro, area,
                   sexo=s01a_02, 
                   edad=s01a_03,
                   aestudio,
@@ -660,28 +802,36 @@ bd<-eh21pe %>% select(folio,area,
                   totper
                   )
 bd<-bd %>%left_join(
-  eh21vi %>% select(folio, internet=s07a_28)
+  eh23v %>% select(folio, internet=s06a_19)
 )
 bd<-bd %>% filter(edad>=18)
-bd<-na.omit(bd)# omitir los valores perdidos (Pob: 18 años o más con algún ingreso laboral)
+bd<-bd %>% mutate(ylab=replace_na(ylab,0))
+bd<-na.omit(bd)
 ##############################
-# 0. Adecuación de formato 
+# 0. Variable de Clasificación
 ##############################
-bd<-bd %>% mutate(
-  rural=(area==2)  
-) %>% select(-area, -folio)
+bd<-bd %>% right_join(  
+  eh23d %>% mutate(y=(s09a_01f==1)) %>% select(folio, nro, y)) 
+names(bd)
+bd<-na.omit(bd)
+bd<-bd %>% select(-folio, -nro)
+bdf<-bd %>% to_factor()
 ###############################
 # 1. Base de entrenamiento y test
 ###############################
 set.seed(753)
-aux<-createDataPartition(bd$rural, p=0.7,list=F)
-bdtrain<-bd[aux,]
-bdtest<-bd[-aux,]
+aux<-createDataPartition(bd$area, p=0.7,list=F)
+bdtrain<-bdf[aux,]
+bdtest<-bdf[-aux,]
+
+bdtrain0<-bd[aux,]
+bdtest0<-bd[-aux,]
+
 ###############################
 #Logit/Probit
 ###############################
-m1<-glm(rural ~ . , data=bdtrain, family = binomial(link="logit"))
-m2<-glm(rural ~ . , data=bdtrain, family = binomial(link="probit"))
+m1<-glm(y ~ . , data=bdtrain, family = binomial(link="logit"))
+m2<-glm(y ~ . , data=bdtrain, family = binomial(link="probit"))
 #optimizar
 m1<-step(m1)
 m2<-step(m2)
@@ -689,9 +839,14 @@ m2<-step(m2)
 prob_l<-predict(m1, bdtest, type="response")
 prob_p<-predict(m2, bdtest, type="response")
 #Clasificación
-bdtest<-bdtest %>% mutate(yl=(prob_l >0.5), yp=(prob_p >0.5))
-tl<-table(bdtest$rural, bdtest$yl)
-tp<-table(bdtest$rural, bdtest$yp)
+boxplot(prob_l)
+boxplot(prob_p)
+pp<-quantile(prob_l,0.70)
+yl<-(prob_l >pp) 
+yp<-(prob_p >pp)
+tl<-table(bdtest$y, yl)
+tp<-table(bdtest$y, yp)
+tl
 confusionMatrix(tl)
 confusionMatrix(tp)
 #REPORTE GLOBAL
@@ -705,56 +860,74 @@ confusionMatrix(tp)$overall[1])
 ###########################
 #naive bayes
 ###########################
-bdtrain$rural<-factor(bdtrain$rural,c(T,F),c("Rural", "Urbano"))
-bdtest$rural<-factor(bdtest$rural,c(T,F),c("Rural", "Urbano"))
 #modelo
-m3<-naive_bayes(rural ~ . , data=bdtrain)
+m3<-naive_bayes(y ~ . , data=bdtrain, usekernel = T, usepoisson = T)
+summary(m3)
 #predicción
-aux_nb<-predict(m3,bdtest)
-tnb<-table(bdtest$rural,aux_nb)
+aux_nb<-predict(m3, bdtest, type = "class")
+tnb<-table(bdtest$y, aux_nb)
+tnb
 confusionMatrix(tnb)
 reporte<-c(reporte,
 confusionMatrix(tnb)$overall[1])
 #######
 #KNN
 #######
-clase_train<-bdtrain$rural
-clase_test<-bdtest$rural
-k<-floor(sqrt(nrow(bdtrain)))
-m4<-knn(bdtrain[,-9], bdtest[,-c(9:11)], clase_train, k=k)
-tknn<- table(m4, bdtest$rural)
+clase_train<-bdtrain0$y
+clase_test<-bdtest0$y
+k<-floor(sqrt(nrow(bdtrain0)))
+train<-bdtrain0 %>% select(-y)  
+test<-bdtest0 %>% select(-y)
+m4<-knn(train, test, clase_train, k=k)
+tknn<- table(bdtest0$y, m4)
+tknn
 confusionMatrix(tknn)
 reporte<-c(reporte,
 confusionMatrix(tknn)$overall[1])
 ###############
 #CART
 ###############
-m6<-rpart(rural~ . , data=bdtrain,  control = rpart.control(cp = 0.01))
+bdtrain$y<-factor(bdtrain$y, c(1, 0), c("SI", "NO"))
+bdtest$y<-factor(bdtest$y, c(1, 0), c("SI", "NO"))
+
+m6<-rpart(y~ . , data=bdtrain,  control = rpart.control(cp = 0, 
+            minsplit = 1, #
+            minbucket = 1, # hojas con 1 obs
+          maxdepth = 5)) # profundidad     
 rpart.plot(m6)
+plotcp(m6)
 clase_m6<-predict(m6, bdtest, type = "class")
 
-tcart<-table(clase_m6, bdtest$rural)
+tcart<-table(bdtest$y, clase_m6)
+tcart
+
 confusionMatrix(tcart)
 reporte<-c(reporte,
 confusionMatrix(tcart)$overall[1])
 #######
 #C50
 #######
-class(bd)
-bd<-as.data.frame(bd)
-bd<-remove_labels(bd)
-bd$rural<-factor(bd$rural,c(T,F),c("Rural","Urbano"))
-set.seed(753)
-aux<-createDataPartition(bd$rural, p=0.7,list=F)
-bdtrain<-bd[aux,]
-bdtest<-bd[-aux,]
+train<- bdtrain0 %>% mutate(y=factor(y, c(1,0),c("SI","NO"))) %>% remove_labels() %>% as.data.frame()
+test<- bdtest0 %>% mutate(y=factor(y, c(1,0),c("SI","NO"))) %>% remove_labels()
 
-m5<-C5.0(rural~ . , data=bdtrain)
+m5<-C5.0(y~ . , data=train)
 plot(m5)
-aux<-predict(m5, bdtest)
-tc50<-table(bdtest$rural, aux)
+aux<-predict(m5, test)
+tc50<-table(test$y, aux)
+tc50
 confusionMatrix(tc50)
 reporte<-c(reporte,
 confusionMatrix(tc50)$overall[1])
-names(reporte)<-c("logit","probit","Naive Bayes","knn","cart","c50")
+
+#redes neuronales
+set.seed(2239)
+m7<-nnet(y~., bdtrain, size=20, maxit=1000)
+aux<-predict(m7, bdtest , type = "class")
+tcnn<-table(bdtest$y, aux)
+tcnn
+tcnn<-tcnn[,c(2,1)]
+confusionMatrix(tcnn)
+reporte<-c(reporte,
+confusionMatrix(tcnn)$overall[1])
+names(reporte)<-c("logit","probit","Naive Bayes","knn","cart","c50","nnet")
 ```
